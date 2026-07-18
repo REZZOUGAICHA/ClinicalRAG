@@ -1,0 +1,19 @@
+# Phase 1 — Data generation + OCR + Chunking
+reportlab==4.2.5          # generate synthetic PDF reports
+pymupdf==1.24.14          # fast PDF text extraction (text-based PDFs)
+Pillow==11.0.0            # image handling (needed by docTR later)
+python-dotenv==1.0.1      # load .env files
+pytest==8.3.4             # testing
+ruff==0.8.4               # linter + formatter
+
+# Phase 2 — Embeddings + Vector DB + Retrieval + LLM Generation
+sentence-transformers==3.3.1  # loads bge-small-en for embeddings + cross-encoder reranker
+chromadb==0.6.3               # local vector database (dev)
+groq==0.11.0                  # Groq API — free, no regional restrictions, Llama 3.3 70B
+
+# Phase 3 additions (uncomment when starting Week 3):
+# fastapi==0.115.6              # backend API
+# uvicorn==0.32.1               # ASGI server
+# streamlit==1.41.1             # frontend
+# ragas==0.2.6                  # eval metrics
+# qdrant-client==1.12.1         # Qdrant Cloud (deployed vector DB)

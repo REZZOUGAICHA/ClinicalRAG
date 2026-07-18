@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/raw/*.pdf
+data/processed/
+data/vectorstore/
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+# HuggingFace model cache (downloaded automatically, not committed)
+.cache/
