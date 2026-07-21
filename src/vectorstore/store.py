@@ -36,30 +36,38 @@ from chromadb.config import Settings
 COLLECTION_NAME = "clinical_chunks"
 VECTORSTORE_DIR = Path("data/vectorstore")
 
+_collection: chromadb.Collection | None = None
+
 
 def get_collection() -> chromadb.Collection:
     """
-    Get (or create) the ChromaDB collection.
+    Get (or create) the ChromaDB collection — singleton pattern.
 
-    A "collection" is ChromaDB's equivalent of a table in SQL —
-    it groups related documents together. We use one collection for
-    all our clinical chunks.
+    WHY SINGLETON?
+    The original version created a new PersistentClient on every call.
+    That meant reopening all the database files on every query, plus
+    ChromaDB firing startup telemetry events on every call.
+    A module-level singleton creates the client once per Python process
+    and reuses it for every subsequent query — exactly how a production
+    server behaves.
 
-    PersistentClient means ChromaDB writes to disk in VECTORSTORE_DIR.
-    If the folder and collection already exist, it loads them.
-    If not, it creates them fresh. This means "ingest" is idempotent —
-    safe to re-run if something went wrong mid-way.
+    In FastAPI: the server starts, this runs once, all requests share
+    the same client. Zero overhead per query.
+    In the CLI: the client is created on the first query and reused for
+    every subsequent question in the same run.
     """
-    VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)
-    client = chromadb.PersistentClient(
-        path=str(VECTORSTORE_DIR),
-        settings=Settings(anonymized_telemetry=False),  # opt out of usage stats
-    )
-    collection = client.get_or_create_collection(
-        name=COLLECTION_NAME,
-        metadata={"hnsw:space": "cosine"},  # explicitly set similarity metric
-    )
-    return collection
+    global _collection
+    if _collection is None:
+        VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)
+        client = chromadb.PersistentClient(
+            path=str(VECTORSTORE_DIR),
+            settings=Settings(anonymized_telemetry=False),
+        )
+        _collection = client.get_or_create_collection(
+            name=COLLECTION_NAME,
+            metadata={"hnsw:space": "cosine"},
+        )
+    return _collection
 
 
 def ingest_chunks(chunks_json_path: Path) -> int:
@@ -148,6 +156,7 @@ def search(query_vector, n_results: int = 5) -> list[dict]:
     output = []
     for i in range(len(results["ids"][0])):
         output.append({
+            "chunk_id": results["ids"][0][i],
             "text": results["documents"][0][i],
             "source_file": results["metadatas"][0][i]["source_file"],
             "section": results["metadatas"][0][i]["section"],

@@ -9,11 +9,14 @@ ruff==0.8.4               # linter + formatter
 # Phase 2 — Embeddings + Vector DB + Retrieval + LLM Generation
 sentence-transformers==3.3.1  # loads bge-small-en for embeddings + cross-encoder reranker
 chromadb==0.6.3               # local vector database (dev)
-groq==0.11.0                  # Groq API — free, no regional restrictions, Llama 3.3 70B
+groq==1.5.0                   # Groq API — free, no regional restrictions, Llama 3.3 70B
+rank-bm25==0.2.2              # BM25 keyword search for hybrid retrieval (RRF fusion)
 
-# Phase 3 additions (uncomment when starting Week 3):
-# fastapi==0.115.6              # backend API
-# uvicorn==0.32.1               # ASGI server
-# streamlit==1.41.1             # frontend
-# ragas==0.2.6                  # eval metrics
-# qdrant-client==1.12.1         # Qdrant Cloud (deployed vector DB)
+# Phase 3 — Backend + Evaluation
+fastapi==0.115.6              # backend API
+uvicorn==0.32.1               # ASGI server to run FastAPI
+python-multipart==0.0.18      # required for FastAPI file uploads
+
+# Phase 3 (uncomment when ready):
+# ragas==0.2.6                  # eval metrics: faithfulness, answer relevancy, context precision
+# qdrant-client==1.12.1         # Qdrant Cloud (deployed vector DB — swap from ChromaDB)

@@ -68,25 +68,25 @@ def _get_client() -> Groq:
 
 def _build_prompt(query: str, chunks: list[dict]) -> str:
     """
-    Build the prompt that gets sent to Gemini.
+    Build the prompt that gets sent to Groq (Llama 3.3 70B).
 
     PROMPT STRUCTURE — why each part is here:
 
     1. Role instruction ("You are a clinical document assistant...")
-       Sets the model's behaviour mode. Without this, Gemini might
+       Sets the model's behaviour mode. Without this, the LLM might
        draw on general medical knowledge beyond the documents — exactly
        what we don't want.
 
     2. Numbered passages with source labels
        Each passage is clearly marked with [1], [2], [3] and its origin.
-       This gives Gemini a consistent citation format to reference.
+       This gives the model a consistent citation format to reference.
 
     3. The strict constraint ("ONLY use the passages above")
        This is the anti-hallucination instruction. Models follow explicit
        constraints reliably when they're clear and repeated.
 
     4. Citation format instruction
-       We tell Gemini exactly how to cite: [Source: filename | SECTION].
+       We tell the model exactly how to cite: [Source: filename | SECTION].
        This gives us machine-parseable citations we can extract later.
 
     5. The question at the end
