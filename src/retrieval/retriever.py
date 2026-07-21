@@ -203,3 +203,13 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
         c["reranker_score"] = float(reranker_scores[i])
 
     return sorted(candidates, key=lambda c: c["reranker_score"], reverse=True)[:top_k]
+
+
+def reset_bm25() -> None:
+    """
+    Invalidate the BM25 cache so it rebuilds from chunks.json on the next query.
+    Call this after ingesting a new document so BM25 picks up the new chunks.
+    """
+    global _bm25_index, _bm25_chunks
+    _bm25_index = None
+    _bm25_chunks = None

@@ -39,6 +39,7 @@ supported by the retrieved context. By constraining the prompt this way,
 we're structurally maximising faithfulness before we even evaluate it.
 """
 
+import json
 import os
 from groq import Groq
 from dotenv import load_dotenv
@@ -156,3 +157,54 @@ def generate_answer(query: str, chunks: list[dict]) -> dict:
         "model": GROQ_MODEL,
         "chunks_used": len(chunks),
     }
+
+
+def stream_answer(query: str, chunks: list[dict]):
+    """
+    Generator that streams the LLM response as Server-Sent Events (SSE).
+
+    WHAT ARE SERVER-SENT EVENTS?
+    SSE is a protocol where the server sends a stream of text messages to
+    the browser over a single HTTP connection. Each message is formatted as:
+        "data: {JSON}\n\n"
+    The double newline signals the end of one event. The browser receives
+    events one at a time as they arrive, rather than waiting for the full
+    response.
+
+    WHY SSE INSTEAD OF WEBSOCKETS?
+    Communication here is one-directional: server sends tokens, client
+    displays them. SSE maps perfectly to that. WebSockets are bidirectional
+    (client can also send mid-stream) — right tool for a real-time chat
+    where the user can interrupt; overkill here.
+
+    EVENT TYPES WE EMIT:
+      {"type": "token",   "content": "word "}  — one per LLM output token
+      {"type": "sources", "sources": [...]}     — after the last token
+      {"type": "done"}                           — signals stream end
+
+    The frontend listens for these events and builds the answer incrementally.
+    Sources arrive last because we retrieve them before calling the LLM but
+    they're most useful displayed together after the full answer.
+    """
+    client = _get_client()
+    prompt = _build_prompt(query, chunks)
+
+    groq_stream = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.1,
+        max_tokens=512,
+        stream=True,
+    )
+
+    for event in groq_stream:
+        token = event.choices[0].delta.content
+        if token:
+            yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+
+    sources = [
+        {"source_file": c["source_file"], "section": c["section"]}
+        for c in chunks
+    ]
+    yield f"data: {json.dumps({'type': 'sources', 'sources': sources})}\n\n"
+    yield 'data: {"type": "done"}\n\n'
