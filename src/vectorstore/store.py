@@ -117,6 +117,7 @@ def ingest_chunks(chunks_json_path: Path) -> int:
             {
                 "source_file": c["source_file"],
                 "section": c["section"],
+                "page_number": c["page_number"],
                 "char_count": c["char_count"],
             }
             for c in chunks
@@ -160,6 +161,7 @@ def search(query_vector, n_results: int = 5) -> list[dict]:
             "text": results["documents"][0][i],
             "source_file": results["metadatas"][0][i]["source_file"],
             "section": results["metadatas"][0][i]["section"],
+            "page_number": results["metadatas"][0][i].get("page_number", 1),
             "score": round(1 - results["distances"][0][i], 4),
         })
     return output

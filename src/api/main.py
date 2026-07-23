@@ -34,6 +34,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from src.chunking.chunker import chunk_document
@@ -98,6 +99,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="src/frontend/static"), name="static")
+
 
 # ---------------------------------------------------------------------------
 # Request/response models
@@ -147,6 +150,18 @@ async def list_documents():
         return {"documents": [], "total": 0}
     files = sorted({m["source_file"] for m in result["metadatas"]})
     return {"documents": files, "total": len(files)}
+
+
+@app.get("/documents/{filename}")
+async def get_document(filename: str):
+    """
+    Serve the raw PDF for a document already in data/raw/, so the sidebar
+    can open the original report in a new tab.
+    """
+    dest = (RAW_DIR / filename).resolve()
+    if RAW_DIR.resolve() not in dest.parents or not dest.is_file():
+        raise HTTPException(status_code=404, detail="Document not found.")
+    return FileResponse(dest, media_type="application/pdf")
 
 
 @app.post("/ask")
@@ -252,6 +267,7 @@ async def upload_pdf(file: UploadFile = File(...)):
                 {
                     "source_file": c.source_file,
                     "section": c.section,
+                    "page_number": c.page_number,
                     "char_count": c.char_count,
                 }
                 for c in new_chunks

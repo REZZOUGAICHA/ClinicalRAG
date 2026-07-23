@@ -104,7 +104,14 @@ def _build_prompt(query: str, chunks: list[dict]) -> str:
     prompt = f"""You are a clinical document assistant. Your job is to answer questions
 about clinical reports accurately and safely.
 
-IMPORTANT RULES:
+FIRST, check what kind of message this is:
+- If it's a greeting, thanks, or general conversational remark (not a request for
+  clinical information) — respond briefly and naturally, in plain conversational
+  language. Do NOT use the passages, do NOT cite a source, and do NOT say the
+  "not found" line below. This rule overrides everything after it.
+- Otherwise, treat it as a clinical question and follow the rules below.
+
+IMPORTANT RULES (for clinical questions only):
 - Answer ONLY using the information in the numbered passages below.
 - Do not use any outside medical knowledge — only what is explicitly stated in the passages.
 - After your answer, cite which passage(s) you used in this format: [Source: filename | SECTION]
@@ -114,9 +121,9 @@ IMPORTANT RULES:
 
 PASSAGES:
 {passages}
-QUESTION: {query}
+MESSAGE: {query}
 
-ANSWER (with citation):"""
+RESPONSE:"""
 
     return prompt
 
@@ -148,14 +155,22 @@ def generate_answer(query: str, chunks: list[dict]) -> dict:
 
     answer_text = response.choices[0].message.content.strip()
 
+    # Only report sources if the model actually cited a passage — a
+    # conversational reply ("You're welcome!") has nothing to cite, and the
+    # chunks we retrieved for it are irrelevant, not real sources.
+    cited = "[Source:" in answer_text
     return {
         "answer": answer_text,
         "sources": [
-            {"source_file": c["source_file"], "section": c["section"]}
+            {
+                "source_file": c["source_file"],
+                "section": c["section"],
+                "page_number": c.get("page_number", 1),
+            }
             for c in chunks
-        ],
+        ] if cited else [],
         "model": GROQ_MODEL,
-        "chunks_used": len(chunks),
+        "chunks_used": len(chunks) if cited else 0,
     }
 
 
@@ -197,14 +212,23 @@ def stream_answer(query: str, chunks: list[dict]):
         stream=True,
     )
 
+    full_answer = ""
     for event in groq_stream:
         token = event.choices[0].delta.content
         if token:
+            full_answer += token
             yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
 
+    # Only report sources if the model actually cited a passage — see the
+    # same reasoning in generate_answer() above.
     sources = [
-        {"source_file": c["source_file"], "section": c["section"]}
+        {
+            "source_file": c["source_file"],
+            "section": c["section"],
+            "text": c["text"],
+            "page_number": c.get("page_number", 1),
+        }
         for c in chunks
-    ]
+    ] if "[Source:" in full_answer else []
     yield f"data: {json.dumps({'type': 'sources', 'sources': sources})}\n\n"
     yield 'data: {"type": "done"}\n\n'

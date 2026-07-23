@@ -124,6 +124,7 @@ def _bm25_search(query: str, n: int = 10) -> list[dict]:
             "text": chunks[i]["text"],
             "source_file": chunks[i]["source_file"],
             "section": chunks[i]["section"],
+            "page_number": chunks[i].get("page_number", 1),
             "score": float(raw_scores[i]),
         }
         for i in top_indices

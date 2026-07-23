@@ -2,492 +2,87 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ClinicalRAG</title>
-<style>
-/* ── TOKENS ─────────────────────────────────────────────────────────── */
-:root {
-  --ground:   #F4F6FA;
-  --surface:  #FFFFFF;
-  --raised:   #EBF0F8;
-  --accent:   #003087;
-  --accent-h: #00236A;
-  --tx:       #0F1C2E;
-  --tx2:      #4A6080;
-  --tx3:      #8BA0BB;
-  --bd:       #D0DCF0;
-  --bd2:      #B8CAE2;
-
-  /* section palette — only used as left-border stripes on evidence */
-  --s-labs:  #1E6FBB;
-  --s-meds:  #6D28D9;
-  --s-diag:  #B91C1C;
-  --s-treat: #1D4ED8;
-  --s-img:   #B45309;
-  --s-fu:    #047857;
-  --s-chief: #C2410C;
-  --s-pt:    #4B5563;
-
-  --hi: #DC2626;
-  --lo: #D97706;
-  --ok: #059669;
-}
-
-@media (prefers-color-scheme: dark) { :root { --ground:#0A1020; --surface:#111827; --raised:#1A2640; --accent:#4B8BF5; --accent-h:#6AA3F7; --tx:#E2EAF4; --tx2:#7A93B8; --tx3:#3D5270; --bd:#1E3050; --bd2:#2A4068; --s-labs:#38BDF8; --s-meds:#A78BFA; --s-diag:#F87171; --s-treat:#818CF8; --s-img:#FBBF24; --s-fu:#34D399; --s-chief:#FB923C; --s-pt:#94A3B8; --hi:#F87171; --lo:#FBBF24; --ok:#34D399; } }
-:root[data-theme="dark"]  { --ground:#0A1020; --surface:#111827; --raised:#1A2640; --accent:#4B8BF5; --accent-h:#6AA3F7; --tx:#E2EAF4; --tx2:#7A93B8; --tx3:#3D5270; --bd:#1E3050; --bd2:#2A4068; --s-labs:#38BDF8; --s-meds:#A78BFA; --s-diag:#F87171; --s-treat:#818CF8; --s-img:#FBBF24; --s-fu:#34D399; --s-chief:#FB923C; --s-pt:#94A3B8; --hi:#F87171; --lo:#FBBF24; --ok:#34D399; }
-:root[data-theme="light"] { --ground:#F4F6FA; --surface:#FFFFFF; --raised:#EBF0F8; --accent:#003087; --accent-h:#00236A; --tx:#0F1C2E; --tx2:#4A6080; --tx3:#8BA0BB; --bd:#D0DCF0; --bd2:#B8CAE2; --s-labs:#1E6FBB; --s-meds:#6D28D9; --s-diag:#B91C1C; --s-treat:#1D4ED8; --s-img:#B45309; --s-fu:#047857; --s-chief:#C2410C; --s-pt:#4B5563; --hi:#DC2626; --lo:#D97706; --ok:#059669; }
-
-/* ── RESET ───────────────────────────────────────────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Segoe UI',-apple-system,system-ui,sans-serif;background:var(--ground);color:var(--tx);font-size:14px;line-height:1.5;overflow:hidden}
-button{cursor:pointer;font-family:inherit}
-
-/* ── APP SHELL ───────────────────────────────────────────────────────── */
-.app{display:flex;height:100vh}
-
-/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
-.sb{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--bd);display:flex;flex-direction:column}
-.sb-logo{padding:15px 16px 13px;border-bottom:1px solid var(--bd)}
-.sb-logo-name{font-size:13px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
-.sb-logo-sub{font-size:9.5px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;margin-top:1px}
-.sb-lbl{padding:13px 16px 5px;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
-.doc-list{flex:1;overflow-y:auto;padding:3px 8px}
-.doc-list::-webkit-scrollbar{width:3px}
-.doc-list::-webkit-scrollbar-thumb{background:var(--bd)}
-.doc-item{display:block;padding:6px 8px;font-size:11.5px;color:var(--tx2);border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all .1s;cursor:default}
-.doc-item:hover{color:var(--tx);border-left-color:var(--bd2)}
-.doc-empty{padding:10px 16px;font-size:11.5px;color:var(--tx3);font-style:italic}
-.sb-upload{padding:12px;border-top:1px solid var(--bd)}
-.upload-btn{width:100%;padding:8px;background:transparent;border:1px solid var(--bd2);color:var(--tx2);font-size:12px;transition:all .12s}
-.upload-btn:hover{border-color:var(--accent);color:var(--accent)}
-.upload-status{margin-top:5px;font-size:10.5px;color:var(--tx3);text-align:center;min-height:14px}
-
-/* ── MAIN ────────────────────────────────────────────────────────────── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-
-/* Header */
-.hdr{height:44px;border-bottom:1px solid var(--bd);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
-.hdr-left{display:flex;align-items:center;gap:14px}
-.status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tx2)}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
-.stat{font-size:11px;color:var(--tx2)}
-.stat b{color:var(--tx);font-weight:600;font-variant-numeric:tabular-nums}
-.hdr-right{display:flex;gap:6px}
-.icon-btn{width:28px;height:28px;border:1px solid var(--bd);background:transparent;color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .12s}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
-
-/* Chat */
-.chat{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:24px}
-.chat::-webkit-scrollbar{width:5px}
-.chat::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
-
-/* Welcome */
-.welcome{margin:auto;max-width:460px;text-align:center;padding:48px 0}
-.welcome h2{font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:400;color:var(--tx);margin-bottom:8px}
-.welcome-rule{width:28px;height:2px;background:var(--accent);margin:14px auto}
-.welcome p{font-size:13px;color:var(--tx2);line-height:1.7}
-.examples{margin-top:22px;display:flex;flex-direction:column;gap:5px}
-.eg{padding:8px 14px;border:1px solid var(--bd);background:transparent;color:var(--tx2);font-size:12px;text-align:left;transition:all .12s;font-family:inherit}
-.eg:hover{border-color:var(--accent);color:var(--accent)}
-
-/* Messages */
-.msg{display:flex;flex-direction:column;gap:3px;animation:up .2s ease}
-@keyframes up{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.msg-u{align-items:flex-end}
-.bubble-u{background:var(--accent);color:#fff;padding:10px 14px;max-width:58%;font-size:13.5px;line-height:1.5}
-.answer-block{max-width:82%;border:1px solid var(--bd);background:var(--surface)}
-.answer-hdr{padding:7px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.answer-lbl{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
-.answer-meta{font-size:9.5px;color:var(--tx3)}
-
-/* The answer itself — Georgia serif. This is the design's defining choice. */
-.answer-text{padding:14px 16px;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.78;color:var(--tx)}
-.answer-text .hi{color:var(--hi);font-weight:600}
-.answer-text .lo{color:var(--lo);font-weight:600}
-.answer-text .ok{color:var(--ok)}
-
-/* Blinking cursor while streaming */
-.cursor{display:inline-block;width:2px;height:.9em;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink .75s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-/* Evidence */
-.ev-wrap{border-top:1px solid var(--bd);padding:10px 14px}
-.ev-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.ev-lbl{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
-.ev-arrow{font-size:9px;color:var(--tx3);transition:transform .14s}
-.ev-arrow.open{transform:rotate(180deg)}
-.ev-list{margin-top:9px;display:flex;flex-direction:column;gap:7px}
-.passage{border-left:3px solid var(--sc,var(--bd2));padding:8px 12px;background:var(--raised);transition:background .15s}
-.passage.lit{background:color-mix(in srgb,var(--sc,var(--accent)) 10%,var(--surface))}
-.pass-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.pass-sec{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sc,var(--tx2))}
-.pass-src{font-size:9.5px;color:var(--tx3);font-family:'Consolas','Courier New',monospace}
-.pass-txt{font-size:11.5px;color:var(--tx2);line-height:1.65;font-family:'Consolas','Courier New',monospace;white-space:pre-wrap}
-.pass-txt .hi{color:var(--hi);font-weight:600}
-.pass-txt .lo{color:var(--lo);font-weight:600}
-.pass-txt .ok{color:var(--ok)}
-
-/* Thinking */
-.thinking{padding:14px 16px;color:var(--tx3);font-size:13px;font-style:italic}
-
-/* Input */
-.input-area{border-top:1px solid var(--bd);background:var(--surface);padding:13px 20px 16px;flex-shrink:0}
-.input-row{display:flex;gap:10px;align-items:flex-end}
-.input-wrap{flex:1;border:1px solid var(--bd2);background:var(--ground);transition:border-color .14s}
-.input-wrap:focus-within{border-color:var(--accent)}
-textarea{width:100%;background:transparent;border:none;outline:none;padding:10px 12px;font-family:inherit;font-size:14px;color:var(--tx);resize:none;display:block;line-height:1.5;max-height:120px}
-textarea::placeholder{color:var(--tx3)}
-.send-btn{padding:10px 20px;background:var(--accent);color:#fff;border:none;font-size:13px;font-weight:600;letter-spacing:.02em;transition:background .12s;flex-shrink:0;align-self:flex-end}
-.send-btn:hover:not(:disabled){background:var(--accent-h)}
-.send-btn:disabled{opacity:.45;cursor:not-allowed}
-.input-hint{display:flex;justify-content:space-between;margin-top:6px}
-.hint{font-size:10.5px;color:var(--tx3)}
-</style>
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
-
 <body>
+
 <div class="app">
 
   <!-- SIDEBAR -->
   <aside class="sb">
     <div class="sb-logo">
       <div class="sb-logo-name">ClinicalRAG</div>
-      <div class="sb-logo-sub">Document Intelligence</div>
+      <div class="sb-logo-tag">Document Intelligence</div>
     </div>
     <div class="sb-lbl">Documents</div>
     <div class="doc-list" id="doc-list">
-      <div class="doc-empty">Loading…</div>
+      <div class="doc-empty">Loading...</div>
     </div>
-    <div class="sb-upload">
-      <button class="upload-btn" onclick="document.getElementById('file-in').click()">
-        Upload PDF
-      </button>
-      <div class="upload-status" id="upload-status"></div>
+    <div class="sb-bottom">
+      <button class="upload-btn" id="upload-btn">Upload PDF</button>
+      <div class="upload-msg" id="upload-msg"></div>
     </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
-
-    <!-- Header -->
     <header class="hdr">
-      <div class="hdr-left">
-        <span class="status"><span class="dot"></span>Llama 3.3 70B via Groq</span>
-        <span class="stat" id="chunk-stat">— chunks indexed</span>
+      <div class="hdr-l">
+        <span class="live"><span class="dot"></span>Llama 3.3 70B via Groq</span>
+        <span class="hdr-stat" id="hdr-stat"><b>0</b> chunks indexed</span>
       </div>
-      <div class="hdr-right">
-        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">☾</button>
+      <div class="hdr-r">
+        <button class="icon-btn" id="theme-btn" title="Toggle theme">☾</button>
       </div>
     </header>
 
-    <!-- Chat -->
     <div class="chat" id="chat">
       <div class="welcome" id="welcome">
         <h2>Clinical Document Intelligence</h2>
-        <div class="welcome-rule"></div>
+        <div class="wline"></div>
         <p>Upload clinical PDF reports and ask questions. Every answer is grounded in your documents with source citations.</p>
-        <div class="examples">
-          <button class="eg" onclick="fillInput(this.textContent)">What was the WBC count in the lymphoma patient?</button>
-          <button class="eg" onclick="fillInput(this.textContent)">What medications was the stroke patient discharged with?</button>
-          <button class="eg" onclick="fillInput(this.textContent)">What is the HbA1c of the diabetic patient?</button>
-          <button class="eg" onclick="fillInput(this.textContent)">Which patient was admitted to the ICU and why?</button>
+        <div class="eg-list">
+          <button class="eg">What was the WBC count in the lymphoma patient?</button>
+          <button class="eg">What medications was the stroke patient discharged with?</button>
+          <button class="eg">What is the HbA1c of the diabetic patient?</button>
+          <button class="eg">Which patient was admitted to the ICU and why?</button>
         </div>
       </div>
     </div>
 
-    <!-- Input -->
     <div class="input-area">
       <div class="input-row">
         <div class="input-wrap">
-          <textarea id="qi" rows="1" placeholder="Ask a clinical question about your documents…"
-            onkeydown="handleKey(event)" oninput="resize(this)"></textarea>
+          <textarea id="qi" rows="1" placeholder="Ask a clinical question about your documents..."></textarea>
         </div>
-        <button class="send-btn" id="send-btn" onclick="submit()">Ask →</button>
+        <button class="send-btn" id="send-btn">Ask</button>
       </div>
-      <div class="input-hint">
+      <div class="input-foot">
         <span class="hint">Enter to send · Shift+Enter for newline</span>
-        <span class="hint" id="docs-hint"></span>
+        <span class="hint" id="foot-stat"></span>
       </div>
     </div>
-
   </main>
 </div>
 
-<!-- Hidden file input -->
-<input type="file" id="file-in" accept=".pdf" style="display:none" onchange="handleUpload(this.files[0])">
-
-<script>
-// ── Section color map ────────────────────────────────────────────────
-const SECTION_COLORS = {
-  'LABORATORY RESULTS': 'var(--s-labs)',
-  'MEDICATIONS':        'var(--s-meds)',
-  'DIAGNOSIS':          'var(--s-diag)',
-  'TREATMENT PLAN':     'var(--s-treat)',
-  'IMAGING':            'var(--s-img)',
-  'FOLLOW-UP':          'var(--s-fu)',
-  'CHIEF COMPLAINT':    'var(--s-chief)',
-  'PATIENT INFORMATION':'var(--s-pt)',
-};
-
-// ── State ────────────────────────────────────────────────────────────
-let busy = false;
-
-// ── Init ─────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  loadDocuments();
-  document.getElementById('qi').focus();
-});
-
-async function loadDocuments() {
-  try {
-    const r = await fetch('/documents');
-    const data = await r.json();
-    const list = document.getElementById('doc-list');
-    const hint = document.getElementById('docs-hint');
-    const stat = document.getElementById('chunk-stat');
-
-    if (data.documents.length === 0) {
-      list.innerHTML = '<div class="doc-empty">No documents yet — upload a PDF</div>';
-    } else {
-      list.innerHTML = data.documents
-        .map(f => `<div class="doc-item" title="${f}">${f}</div>`)
-        .join('');
-    }
-
-    hint.textContent = `${data.total} document${data.total !== 1 ? 's' : ''} indexed`;
-
-    // Also fetch chunk count
-    const h = await fetch('/health');
-    const hd = await h.json();
-    stat.textContent = `${hd.chunks_indexed} chunks indexed`;
-  } catch(e) {
-    document.getElementById('doc-list').innerHTML =
-      '<div class="doc-empty">Could not reach server</div>';
-  }
-}
-
-// ── Send message ─────────────────────────────────────────────────────
-async function submit() {
-  const input = document.getElementById('qi');
-  const query = input.value.trim();
-  if (!query || busy) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-  setBusy(true);
-
-  // Hide welcome on first message
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
-  // User bubble
-  appendEl('chat', `
-    <div class="msg msg-u">
-      <div class="bubble-u">${esc(query)}</div>
-    </div>`);
-
-  // Assistant block (starts empty)
-  const msgId = 'msg-' + Date.now();
-  appendEl('chat', `
-    <div class="msg" id="${msgId}">
-      <div class="answer-block">
-        <div class="answer-hdr">
-          <span class="answer-lbl">ClinicalRAG</span>
-          <span class="answer-meta" id="${msgId}-meta">searching…</span>
-        </div>
-        <div class="answer-text thinking" id="${msgId}-text">Retrieving relevant passages…</div>
+<!-- Modal -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-sec" id="m-sec"></div>
+        <div class="modal-src" id="m-src"></div>
       </div>
-    </div>`);
-
-  scrollDown();
-
-  const t0 = Date.now();
-  let fullText = '';
-  let textEl = document.getElementById(`${msgId}-text`);
-  let metaEl = document.getElementById(`${msgId}-meta`);
-  let sourcesReceived = [];
-  let started = false;
-
-  try {
-    const resp = await fetch('/ask', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ query, top_k: 3 })
-    });
-
-    if (!resp.ok) throw new Error(`${resp.status}`);
-
-    const reader = resp.body.getReader();
-    const dec = new TextDecoder();
-    let buf = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        let ev;
-        try { ev = JSON.parse(line.slice(6)); } catch { continue; }
-
-        if (ev.type === 'token') {
-          if (!started) {
-            // First token — clear the "searching" state
-            textEl.classList.remove('thinking');
-            textEl.innerHTML = '';
-            started = true;
-          }
-          fullText += ev.content;
-          textEl.innerHTML = formatAnswer(fullText) + '<span class="cursor"></span>';
-          scrollDown();
-
-        } else if (ev.type === 'sources') {
-          sourcesReceived = ev.sources;
-
-        } else if (ev.type === 'done') {
-          const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-          // Finalise text (remove cursor)
-          textEl.innerHTML = formatAnswer(fullText);
-          metaEl.textContent = `${elapsed}s · ${sourcesReceived.length} chunks`;
-          // Render evidence
-          if (sourcesReceived.length > 0) {
-            renderEvidence(msgId, sourcesReceived);
-          }
-        }
-      }
-    }
-  } catch(e) {
-    textEl.classList.remove('thinking');
-    textEl.innerHTML = `<span style="color:var(--hi)">Error: ${esc(e.message)}. Is the server running?</span>`;
-  }
-
-  setBusy(false);
-  scrollDown();
-}
-
-// ── Evidence cards ────────────────────────────────────────────────────
-function renderEvidence(msgId, sources) {
-  const block = document.querySelector(`#${msgId} .answer-block`);
-  const div = document.createElement('div');
-  div.className = 'ev-wrap';
-
-  const passages = sources.map((s, i) => {
-    const color = SECTION_COLORS[s.section.toUpperCase()] || 'var(--s-pt)';
-    return `
-      <div class="passage" id="${msgId}-ev${i}" style="--sc:${color}">
-        <div class="pass-meta">
-          <span class="pass-sec">${esc(s.section)}</span>
-          <span class="pass-src">${esc(s.source_file)}</span>
-        </div>
-      </div>`;
-  }).join('');
-
-  div.innerHTML = `
-    <div class="ev-toggle" onclick="toggleEvidence(this)">
-      <span class="ev-lbl">Retrieved evidence — ${sources.length} passage${sources.length > 1 ? 's' : ''}</span>
-      <span class="ev-arrow" id="${msgId}-arrow">▾</span>
+      <button class="modal-close" id="modal-close">✕</button>
     </div>
-    <div class="ev-list" id="${msgId}-evlist" style="display:none">
-      ${passages}
-    </div>`;
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
 
-  block.appendChild(div);
-}
+<input type="file" id="file-in" accept=".pdf" style="display:none">
 
-function toggleEvidence(btn) {
-  const list = btn.nextElementSibling;
-  const arrow = btn.querySelector('.ev-arrow');
-  const open = list.style.display !== 'none';
-  list.style.display = open ? 'none' : 'flex';
-  arrow.classList.toggle('open', !open);
-}
-
-// ── Upload ────────────────────────────────────────────────────────────
-async function handleUpload(file) {
-  if (!file) return;
-  const status = document.getElementById('upload-status');
-  status.textContent = `Uploading ${file.name}…`;
-
-  const fd = new FormData();
-  fd.append('file', file);
-
-  try {
-    const r = await fetch('/upload', { method: 'POST', body: fd });
-    const data = await r.json();
-    if (!r.ok) {
-      status.textContent = data.detail || 'Upload failed';
-      return;
-    }
-    status.textContent = `✓ ${data.chunks_added} chunks added`;
-    await loadDocuments();
-  } catch(e) {
-    status.textContent = 'Upload failed';
-  }
-
-  // Clear status after 4s
-  setTimeout(() => { status.textContent = ''; }, 4000);
-  document.getElementById('file-in').value = '';
-}
-
-// ── Helpers ────────────────────────────────────────────────────────────
-function formatAnswer(text) {
-  // Colour [HIGH], [LOW], [Normal] flags in the answer text
-  return esc(text)
-    .replace(/\[HIGH\]/g, '<span class="hi">[HIGH]</span>')
-    .replace(/\[CRITICALLY HIGH\]/g, '<span class="hi">[CRITICALLY HIGH]</span>')
-    .replace(/\[LOW\]/g, '<span class="lo">[LOW]</span>')
-    .replace(/\[Normal\]/g, '<span class="ok">[Normal]</span>');
-}
-
-function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function appendEl(id, html) {
-  const el = document.getElementById(id);
-  el.insertAdjacentHTML('beforeend', html);
-}
-
-function scrollDown() {
-  const chat = document.getElementById('chat');
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function setBusy(b) {
-  busy = b;
-  document.getElementById('send-btn').disabled = b;
-  document.getElementById('qi').disabled = b;
-}
-
-function fillInput(text) {
-  const el = document.getElementById('qi');
-  el.value = text;
-  resize(el);
-  el.focus();
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
-}
-
-function resize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function toggleTheme() {
-  const r = document.documentElement;
-  const cur = r.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  r.setAttribute('data-theme', next);
-  document.getElementById('theme-btn').textContent = next === 'dark' ? '☀' : '☾';
-}
-</script>
+<script type="module" src="/static/js/app.js"></script>
 </body>
 </html>

@@ -61,6 +61,7 @@ class Chunk:
     source_file: str        # filename of the source PDF
     section: str            # section label (e.g. "DIAGNOSIS")
     text: str               # the actual chunk text
+    page_number: int        # 1-indexed page this chunk's content starts on
     char_count: int = field(init=False)
 
     def __post_init__(self):
@@ -72,8 +73,24 @@ class Chunk:
             "source_file": self.source_file,
             "section": self.section,
             "text": self.text,
+            "page_number": self.page_number,
             "char_count": self.char_count,
         }
+
+
+def _offset_to_page(pages: list, offset: int) -> int:
+    """
+    Map a character offset in doc.full_text back to the 1-indexed page it
+    falls on. full_text is built as "\\n\\n".join(page.raw_text for page in
+    pages), so each page after the first is preceded by 2 extra characters.
+    """
+    cursor = 0
+    for page in pages:
+        cursor += len(page.raw_text)
+        if offset <= cursor:
+            return page.page_number
+        cursor += 2  # the "\n\n" joiner
+    return pages[-1].page_number if pages else 1
 
 
 def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
@@ -96,6 +113,7 @@ def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
             source_file=Path(doc.source_path).name,
             section="FULL_DOCUMENT",
             text=text.strip(),
+            page_number=doc.pages[0].page_number if doc.pages else 1,
         )]
 
     chunks = []
@@ -114,6 +132,7 @@ def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
             source_file=Path(doc.source_path).name,
             section=section_name,
             text=content,
+            page_number=_offset_to_page(doc.pages, content_start),
         ))
 
     return chunks
