@@ -39,7 +39,7 @@ from pydantic import BaseModel
 
 from src.chunking.chunker import chunk_document
 from src.embeddings.embedder import get_model
-from src.generation.generator import stream_answer
+from src.generation.generator import rewrite_query, stream_answer
 from src.ocr.extractor import extract
 from src.retrieval.retriever import _get_bm25, get_reranker, reset_bm25, retrieve
 from src.vectorstore.store import get_collection
@@ -185,9 +185,14 @@ async def ask(req: QuestionRequest):
     if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
 
+    # Retrieval is sensitive to exact wording (typos can drop the right
+    # document out of the shortlist) — search on a typo-corrected version,
+    # but still generate the answer against the user's original message.
+    search_query = await run_in_threadpool(rewrite_query, req.query)
+
     # retrieve() is CPU-bound (embedding + BM25 + reranker) — run in thread pool
     # so we don't block FastAPI's async event loop
-    chunks = await run_in_threadpool(retrieve, req.query, req.top_k)
+    chunks = await run_in_threadpool(retrieve, search_query, req.top_k)
 
     return StreamingResponse(
         stream_answer(req.query, chunks),

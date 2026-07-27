@@ -41,12 +41,20 @@ we're structurally maximising faithfulness before we even evaluate it.
 
 import json
 import os
+import re
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
 GROQ_MODEL = "llama-3.3-70b-versatile"
+
+# Matches the citation format we instruct the model to use:
+# "[Source: filename.pdf | SECTION NAME]". The model tends to echo the
+# "Section:" label from how passages are formatted in the prompt (producing
+# "[Source: file.pdf | Section: SECTION NAME]") even though it isn't asked
+# to — so that label is optional here, not part of the real section name.
+_CITATION_RE = re.compile(r"\[Source:\s*([^|\]]+?)\s*\|\s*(?:Section:\s*)?([^\]]+?)\s*\]", re.IGNORECASE)
 
 
 def _get_client() -> Groq:
@@ -65,6 +73,70 @@ def _get_client() -> Groq:
             "and contains GROQ_API_KEY=gsk_your-key-here"
         )
     return Groq(api_key=api_key)
+
+
+def rewrite_query(query: str) -> str:
+    """
+    Normalize the raw user query before it's used for retrieval: fix typos,
+    tidy up phrasing — without changing what's being asked.
+
+    WHY THIS EXISTS:
+    Embedding search and BM25 keyword search both match on exact wording.
+    A single typo ("patien" instead of "patient") can shift the embedding
+    enough, and breaks BM25's exact-token match entirely, to drop the
+    correct document out of the retrieval shortlist before reranking even
+    gets a chance to see it. Neither the embedding model nor BM25 do any
+    spelling correction on their own.
+
+    This is a small, fast, separate LLM call — not the main generation
+    call — so retrieval always searches on cleaned-up text, while the
+    final answer is still generated against the user's original message
+    (see generate_answer/stream_answer), so the reply still reflects what
+    they actually typed.
+    """
+    client = _get_client()
+    prompt = f"""Rewrite the following user query to fix any spelling or typing
+errors and tidy up the phrasing. Do NOT change its meaning, do NOT add
+information, and do NOT answer it. If it's already clear, return it unchanged.
+Reply with ONLY the rewritten query, nothing else.
+
+Query: {query}
+
+Rewritten query:"""
+
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.0,
+        max_tokens=100,
+    )
+    return response.choices[0].message.content.strip().strip('"')
+
+
+def _select_cited_sources(answer_text: str, chunks: list[dict]) -> list[dict]:
+    """
+    Return only the chunks the model actually cited in its answer, matched
+    by the (filename, SECTION) pairs parsed out of its [Source: ...] tags.
+
+    WHY NOT JUST RETURN EVERY RETRIEVED CHUNK?
+    retrieve() may return more chunks than were actually useful — either
+    because a query is purely conversational (nothing was cited) or because
+    of parent-document expansion (sibling sections pulled in for context
+    that the model didn't end up needing). Showing all of them as citation
+    chips would be misleading — a "source" the UI highlights should be a
+    passage the answer genuinely relied on.
+    """
+    cited_keys = {
+        (fname.strip(), section.strip().upper())
+        for fname, section in _CITATION_RE.findall(answer_text)
+    }
+    if cited_keys:
+        return [c for c in chunks if (c["source_file"], c["section"].upper()) in cited_keys]
+    if "[Source:" in answer_text:
+        # A citation marker is present but didn't match our expected format —
+        # fall back to showing everything retrieved rather than nothing.
+        return chunks
+    return []
 
 
 def _build_prompt(query: str, chunks: list[dict]) -> str:
@@ -154,11 +226,8 @@ def generate_answer(query: str, chunks: list[dict]) -> dict:
     )
 
     answer_text = response.choices[0].message.content.strip()
+    cited_chunks = _select_cited_sources(answer_text, chunks)
 
-    # Only report sources if the model actually cited a passage — a
-    # conversational reply ("You're welcome!") has nothing to cite, and the
-    # chunks we retrieved for it are irrelevant, not real sources.
-    cited = "[Source:" in answer_text
     return {
         "answer": answer_text,
         "sources": [
@@ -167,10 +236,10 @@ def generate_answer(query: str, chunks: list[dict]) -> dict:
                 "section": c["section"],
                 "page_number": c.get("page_number", 1),
             }
-            for c in chunks
-        ] if cited else [],
+            for c in cited_chunks
+        ],
         "model": GROQ_MODEL,
-        "chunks_used": len(chunks) if cited else 0,
+        "chunks_used": len(cited_chunks),
     }
 
 
@@ -219,8 +288,7 @@ def stream_answer(query: str, chunks: list[dict]):
             full_answer += token
             yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
 
-    # Only report sources if the model actually cited a passage — see the
-    # same reasoning in generate_answer() above.
+    cited_chunks = _select_cited_sources(full_answer, chunks)
     sources = [
         {
             "source_file": c["source_file"],
@@ -228,7 +296,7 @@ def stream_answer(query: str, chunks: list[dict]):
             "text": c["text"],
             "page_number": c.get("page_number", 1),
         }
-        for c in chunks
-    ] if "[Source:" in full_answer else []
+        for c in cited_chunks
+    ]
     yield f"data: {json.dumps({'type': 'sources', 'sources': sources})}\n\n"
     yield 'data: {"type": "done"}\n\n'

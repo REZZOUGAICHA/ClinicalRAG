@@ -23,7 +23,7 @@ WHAT THIS FUNCTION DOES (step by step):
 """
 
 from src.retrieval.retriever import retrieve
-from src.generation.generator import generate_answer
+from src.generation.generator import generate_answer, rewrite_query
 
 
 def ask(query: str, top_k: int = 3, use_reranker: bool = True) -> dict:
@@ -45,8 +45,12 @@ def ask(query: str, top_k: int = 3, use_reranker: bool = True) -> dict:
           "chunks_used": how many chunks were sent to the LLM,
         }
     """
+    # Search on a typo-corrected version of the query — retrieval is
+    # sensitive to exact wording, generation isn't (see rewrite_query docstring)
+    search_query = rewrite_query(query)
+
     # Step 1 + 2 + 3: retrieve (embed → search → rerank)
-    chunks = retrieve(query, top_k=top_k, use_reranker=use_reranker)
+    chunks = retrieve(search_query, top_k=top_k, use_reranker=use_reranker)
 
     if not chunks:
         return {

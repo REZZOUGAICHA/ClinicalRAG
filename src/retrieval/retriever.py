@@ -152,13 +152,50 @@ def _rrf(ranked_lists: list[list[str]], k: int = 60) -> list[str]:
     return sorted(scores, key=lambda cid: scores[cid], reverse=True)
 
 
+def _expand_to_parent_documents(chunks: list[dict]) -> list[dict]:
+    """
+    Pull in sibling chunks from the same source PDF as each retrieved chunk
+    ("parent document expansion" / "small-to-big retrieval").
+
+    WHY THIS EXISTS:
+    Retrieval scores each chunk independently, so a question needing info
+    split across two sections of the SAME report can correctly identify the
+    right document but still miss the section that actually answers it.
+    Example: "what medications is the lymphoma patient on?" — "lymphoma"
+    only appears in the DIAGNOSIS chunk; the drug list lives in a separate
+    MEDICATIONS chunk. Retrieval might correctly rank DIAGNOSIS #1, but
+    without expansion, MEDICATIONS never makes it into the prompt.
+
+    Expanding to the rest of that document fixes this. It's cheap here
+    because each report is short (~7 small sections) — worth it for
+    correctness on cross-section questions, common given each PDF covers
+    one patient across multiple sections.
+    """
+    _, all_chunks = _get_bm25()
+    if not all_chunks:
+        return chunks
+
+    seen_ids = {c["chunk_id"] for c in chunks}
+    source_files = {c["source_file"] for c in chunks}
+
+    expanded = list(chunks)
+    for c in all_chunks:
+        if c["source_file"] in source_files and c["chunk_id"] not in seen_ids:
+            expanded.append(c)
+            seen_ids.add(c["chunk_id"])
+
+    return expanded
+
+
 def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict]:
     """
-    Hybrid retrieval: dense + sparse → RRF → rerank → top_k.
+    Hybrid retrieval: dense + sparse → RRF → rerank → top_k → parent expansion.
 
     Args:
         query:        the user's natural language question
-        top_k:        how many chunks to return to the LLM (default 3)
+        top_k:        how many top-scoring chunks to select (default 3) —
+                      note the final return can be larger, since sibling
+                      chunks from the same source document(s) get appended
         use_reranker: set False to skip Stage 3 (faster, less precise)
 
     Returns list of dicts: chunk_id, text, source_file, section, score,
@@ -193,7 +230,7 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
     candidates = [chunk_lookup[cid] for cid in fused_ids[:5] if cid in chunk_lookup]
 
     if not use_reranker or len(candidates) <= 1:
-        return candidates[:top_k]
+        return _expand_to_parent_documents(candidates[:top_k])
 
     # Stage 3: cross-encoder reranking on the top-5 fused candidates
     reranker = get_reranker()
@@ -203,7 +240,8 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
     for i, c in enumerate(candidates):
         c["reranker_score"] = float(reranker_scores[i])
 
-    return sorted(candidates, key=lambda c: c["reranker_score"], reverse=True)[:top_k]
+    top = sorted(candidates, key=lambda c: c["reranker_score"], reverse=True)[:top_k]
+    return _expand_to_parent_documents(top)
 
 
 def reset_bm25() -> None:
