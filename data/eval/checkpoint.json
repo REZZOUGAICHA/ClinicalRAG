@@ -1,0 +1,80 @@
+[
+  {
+    "id": "wbc-lymphoma",
+    "question": "What was the WBC count in the lymphoma patient?",
+    "answer": "The WBC count in the lymphoma patient was 11.2 × 10^9/L, which is higher than the reference range of 4.0–11.0.\n[Source: report_001_lymphoma_staging.pdf | Section: LABORATORY RESULTS]",
+    "reference": "The WBC count was 11.2 x 10^9/L, which is high (reference range 4.0-11.0).",
+    "chunks_retrieved": 16,
+    "scores": {
+      "faithfulness": 1.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_relevancy": 1.0
+    }
+  },
+  {
+    "id": "hba1c-diabetic",
+    "question": "What is the HbA1c of the diabetic patient?",
+    "answer": "The HbA1c of the diabetic patient is 9.2% (Target: <7.0%) [ABOVE TARGET]. \n[Source: report_002_diabetes_management.pdf | Section: LABORATORY RESULTS]",
+    "reference": "The HbA1c is 9.2%, above the target of <7.0%.",
+    "chunks_retrieved": 16,
+    "scores": {
+      "faithfulness": 0.75,
+      "context_precision": 0.3333333333,
+      "context_recall": 1.0,
+      "answer_relevancy": 0.9644063587162935
+    }
+  },
+  {
+    "id": "meds-acute-mi-cross-section",
+    "question": "What medications was the acute MI patient discharged with?",
+    "answer": "The acute MI patient was discharged with the following medications: \n- Aspirin 100 mg OD PO (lifelong)\n- Ticagrelor 90 mg BID PO (dual antiplatelet, 12 months)\n- Atorvastatin 80 mg OD PO (high-intensity statin)\n- Ramipril 5 mg OD PO (ACE inhibitor, cardiac remodeling)\n- Bisoprolol 5 mg OD PO (beta-blocker, rate control)\n- Pantoprazole 40 mg OD PO (GI protection with dual antiplatelet)\n[Source: report_003_acute_mi.pdf | Section: MEDICATIONS]",
+    "reference": "Aspirin 100 mg OD, Ticagrelor 90 mg BID, Atorvastatin 80 mg OD, Ramipril 5 mg OD, Bisoprolol 5 mg OD, and Pantoprazole 40 mg OD.",
+    "chunks_retrieved": 16,
+    "scores": {
+      "faithfulness": 0.8333333333333334,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_relevancy": 0.9922316809591645
+    }
+  },
+  {
+    "id": "stroke-door-to-needle",
+    "question": "What was the door-to-needle time for the stroke patient's thrombolysis?",
+    "answer": "The door-to-needle time for the stroke patient's thrombolysis was 27 minutes.\n\n[Source: report_006_stroke.pdf | SECTION: DIAGNOSIS]",
+    "reference": "27 minutes (tPA administered at 10:22).",
+    "chunks_retrieved": 8,
+    "scores": {
+      "faithfulness": 1.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_relevancy": 0.9999999999999998
+    }
+  },
+  {
+    "id": "stroke-anticoagulant-cross-section",
+    "question": "What anticoagulant is the stroke patient on and why?",
+    "answer": "The patient is on Apixaban 5 mg BID PO as an anticoagulant for atrial fibrillation (AF). \n\n[Source: report_006_stroke.pdf | Section: MEDICATIONS]",
+    "reference": "Apixaban 5 mg BID, for anticoagulation due to newly diagnosed atrial fibrillation (the cause of the stroke).",
+    "chunks_retrieved": 8,
+    "scores": {
+      "faithfulness": 1.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_relevancy": 0.8637548127103825
+    }
+  },
+  {
+    "id": "sepsis-lactate",
+    "question": "What was the lactate level in the sepsis patient?",
+    "answer": "The lactate level in the sepsis patient was 4.8 mmol/L, which is critically high, indicating tissue hypoperfusion. \n[Source: report_009_sepsis.pdf | Section: LABORATORY RESULTS]",
+    "reference": "4.8 mmol/L, critically high (reference <2.0), indicating tissue hypoperfusion.",
+    "chunks_retrieved": 16,
+    "scores": {
+      "faithfulness": 1.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 0.0,
+      "answer_relevancy": 0.9887781035091392
+    }
+  }
+]
