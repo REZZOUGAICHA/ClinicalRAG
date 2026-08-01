@@ -154,8 +154,10 @@ def _rrf(ranked_lists: list[list[str]], k: int = 60) -> list[str]:
 
 def _expand_to_parent_documents(chunks: list[dict]) -> list[dict]:
     """
-    Pull in sibling chunks from the same source PDF as each retrieved chunk
-    ("parent document expansion" / "small-to-big retrieval").
+    Pull in sibling chunks from the same source PDF as the single
+    highest-ranked chunk ("parent document expansion" / "small-to-big
+    retrieval"). `chunks` must already be sorted best-match-first — true for
+    both callers in retrieve() (reranker-sorted or RRF-sorted).
 
     WHY THIS EXISTS:
     Retrieval scores each chunk independently, so a question needing info
@@ -166,21 +168,26 @@ def _expand_to_parent_documents(chunks: list[dict]) -> list[dict]:
     MEDICATIONS chunk. Retrieval might correctly rank DIAGNOSIS #1, but
     without expansion, MEDICATIONS never makes it into the prompt.
 
-    Expanding to the rest of that document fixes this. It's cheap here
-    because each report is short (~7 small sections) — worth it for
-    correctness on cross-section questions, common given each PDF covers
-    one patient across multiple sections.
+    WHY ONLY THE TOP-RANKED DOCUMENT, NOT EVERY DOCUMENT IN THE TOP-K:
+    An earlier version expanded every document represented anywhere in the
+    top-k. For a generic-sounding query, the top-k often spans 2-3 different
+    patients' reports (structurally similar sections score similarly), which
+    expanded into 2-3 *entire* patient records — most of it irrelevant. A
+    RAGAS eval caught this concretely: one question retrieved 16 chunks but
+    only used 1, scoring context_precision of 0.33. Expanding only the
+    best-ranked chunk's document keeps the original fix while not dragging
+    in unrelated patients just because one of their sections ranked #3.
     """
     _, all_chunks = _get_bm25()
-    if not all_chunks:
+    if not all_chunks or not chunks:
         return chunks
 
     seen_ids = {c["chunk_id"] for c in chunks}
-    source_files = {c["source_file"] for c in chunks}
+    top_source_file = chunks[0]["source_file"]
 
     expanded = list(chunks)
     for c in all_chunks:
-        if c["source_file"] in source_files and c["chunk_id"] not in seen_ids:
+        if c["source_file"] == top_source_file and c["chunk_id"] not in seen_ids:
             expanded.append(c)
             seen_ids.add(c["chunk_id"])
 
