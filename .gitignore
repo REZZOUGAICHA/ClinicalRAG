@@ -5,6 +5,9 @@ __pycache__/
 data/raw/*.pdf
 data/processed/
 data/vectorstore/
+data/eval/
+# Third-party MTSamples dataset — download separately, see scripts/prepare_mtsamples.py
+data/mtsamples_raw/
 *.egg-info/
 .ruff_cache/
 .pytest_cache/

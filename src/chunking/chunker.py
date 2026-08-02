@@ -54,6 +54,21 @@ _SECTION_PATTERN = re.compile(
     re.IGNORECASE | re.MULTILINE,
 )
 
+# Fallback pattern for real-world dictated notes (e.g. MTSamples), which
+# don't use standalone-line headers like the synthetic reports do. Instead
+# headers are inline, comma-delimited: "PREOPERATIVE DIAGNOSIS:, Morbid
+# obesity. ,PROCEDURE:, ..." — an ALL-CAPS phrase, optionally followed by a
+# colon, immediately followed by a comma. Unlike _SECTION_PATTERN this isn't
+# restricted to a known vocabulary — real notes use dozens of different
+# headers (CC, HX, PREOPERATIVE DIAGNOSIS, ESTIMATED BLOOD LOSS, ...), so any
+# comma-terminated all-caps phrase is treated as a section boundary. This is
+# a heuristic, not a guarantee: prose that happens to contain an all-caps
+# word directly followed by a comma would also be split — acceptable in
+# practice (verified against real MTSamples samples across specialties) but
+# worth knowing if this chunker is ever pointed at a different real-world
+# corpus.
+_INLINE_SECTION_PATTERN = re.compile(r",?\s*([A-Z][A-Z0-9/&\- ]{1,45}?)\s*:?\s*,\s*")
+
 
 @dataclass
 class Chunk:
@@ -93,29 +108,7 @@ def _offset_to_page(pages: list, offset: int) -> int:
     return pages[-1].page_number if pages else 1
 
 
-def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
-    """
-    Split a document's full text into section-aware chunks.
-
-    Returns one Chunk per detected section. If no section headers are found
-    (e.g. unstructured note), falls back to a single chunk with section="FULL_DOCUMENT".
-    """
-    source_name = Path(doc.source_path).stem
-    text = doc.full_text
-
-    # Find all section headers and their positions in the text
-    matches = list(_SECTION_PATTERN.finditer(text))
-
-    if not matches:
-        # Fallback: no structure detected — treat whole document as one chunk
-        return [Chunk(
-            chunk_id=f"{source_name}__FULL_DOCUMENT__0",
-            source_file=Path(doc.source_path).name,
-            section="FULL_DOCUMENT",
-            text=text.strip(),
-            page_number=doc.pages[0].page_number if doc.pages else 1,
-        )]
-
+def _build_chunks_from_matches(matches: list, text: str, doc: ExtractedDocument, source_name: str) -> list[Chunk]:
     chunks = []
     for i, match in enumerate(matches):
         section_name = match.group(1).upper().strip()
@@ -134,8 +127,45 @@ def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
             text=content,
             page_number=_offset_to_page(doc.pages, content_start),
         ))
-
     return chunks
+
+
+def chunk_document(doc: ExtractedDocument) -> list[Chunk]:
+    """
+    Split a document's full text into section-aware chunks.
+
+    Tries two structures in order:
+    1. _SECTION_PATTERN — standalone-line headers from a known vocabulary
+       (how the synthetic reports are written).
+    2. _INLINE_SECTION_PATTERN — comma-delimited inline headers (how real
+       dictated notes like MTSamples are formatted).
+
+    Falls back to a single chunk with section="FULL_DOCUMENT" if neither
+    finds structure — an honest outcome for genuinely unstructured prose,
+    not a bug to work around.
+    """
+    source_name = Path(doc.source_path).stem
+    text = doc.full_text
+
+    matches = list(_SECTION_PATTERN.finditer(text))
+    if not matches:
+        inline_matches = list(_INLINE_SECTION_PATTERN.finditer(text))
+        # Require at least 2 hits before trusting this as real structure —
+        # a single all-caps-followed-by-comma occurrence is more likely a
+        # coincidence in prose than an actual section boundary.
+        if len(inline_matches) >= 2:
+            matches = inline_matches
+
+    if not matches:
+        return [Chunk(
+            chunk_id=f"{source_name}__FULL_DOCUMENT__0",
+            source_file=Path(doc.source_path).name,
+            section="FULL_DOCUMENT",
+            text=text.strip(),
+            page_number=doc.pages[0].page_number if doc.pages else 1,
+        )]
+
+    return _build_chunks_from_matches(matches, text, doc, source_name)
 
 
 def chunk_documents(docs: list[ExtractedDocument]) -> list[Chunk]:
