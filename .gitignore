@@ -8,6 +8,9 @@ data/vectorstore/
 data/eval/
 # Third-party MTSamples dataset — download separately, see scripts/prepare_mtsamples.py
 data/mtsamples_raw/
+# Third-party OCR test datasets (RxHandBD, FUNSD) — see scripts/test_ocr_*.py
+data/ocr_test/
+data/ocr_test_printed/
 *.egg-info/
 .ruff_cache/
 .pytest_cache/
