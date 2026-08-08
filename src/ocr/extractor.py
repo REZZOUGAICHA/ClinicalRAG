@@ -103,6 +103,37 @@ def get_ocr_model():
     return _ocr_model
 
 
+_MIN_OCR_DIMENSION = 512  # px
+
+
+def _pad_small_images(images: list) -> list:
+    """
+    docTR's detection model is trained on document-scale images with real
+    margins around the text — fed a tightly-cropped small image (e.g. a
+    single word crop, 128x128px), it finds ZERO text regions and returns
+    nothing, even though the text itself is perfectly legible. Verified
+    directly: detection blocks went from 0 to 1 just by pasting a 128x128
+    crop onto a 512x512 white canvas — nothing else changed. This isn't a
+    workaround for one dataset; any small/tightly-cropped input would hit
+    the same failure, so every image gets this safety margin.
+    """
+    import numpy as np
+    from PIL import Image
+
+    padded = []
+    for arr in images:
+        h, w = arr.shape[:2]
+        if h >= _MIN_OCR_DIMENSION and w >= _MIN_OCR_DIMENSION:
+            padded.append(arr)
+            continue
+
+        size = max(_MIN_OCR_DIMENSION, h, w) + 2 * min(h, w)
+        canvas = Image.new("RGB", (size, size), (255, 255, 255))
+        canvas.paste(Image.fromarray(arr).convert("RGB"), ((size - w) // 2, (size - h) // 2))
+        padded.append(np.array(canvas))
+    return padded
+
+
 def extract_scanned_document(path: Path) -> ExtractedDocument:
     """
     Extract text from a scanned/image document — a plain image file (JPG,
@@ -122,6 +153,8 @@ def extract_scanned_document(path: Path) -> ExtractedDocument:
         images = DocumentFile.from_pdf(str(path))
     else:
         images = DocumentFile.from_images(str(path))
+
+    images = _pad_small_images(images)
 
     model = get_ocr_model()
     result = model(images)
