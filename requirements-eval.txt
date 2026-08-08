@@ -1,0 +1,19 @@
+# Only needed to run the RAGAS eval harness (scripts/evaluate.py) locally —
+# NOT part of the deployed app's dependencies (see requirements.txt).
+#
+# Getting this stack working involved real dependency archaeology — see
+# project memory / session history before touching versions casually:
+#   - ragas 0.4.3's "Collections" API needed langchain-community pinned to
+#     0.3.31 (newer versions dropped a module ragas 0.4.3 still imports)
+#   - the eval judge runs on Gemini (google-genai + instructor's async
+#     client path), deliberately separate from the app's own Groq quota
+
+ragas==0.4.3
+langchain-community==0.3.31
+openai==2.49.0                # OpenAI-compatible client, also used to talk to Groq in scripts/evaluate.py's earlier attempts
+google-genai==2.14.0           # Gemini SDK — the eval judge model
+instructor==1.15.4             # structured LLM output layer ragas's Collections metrics are built on
+jsonref==1.1.0                 # required by instructor for Gemini structured output schemas
+rapidfuzz==3.14.5              # used by scripts/test_ocr_accuracy.py for similarity scoring
+
+# Install with: pip install -r requirements.txt -r requirements-eval.txt
