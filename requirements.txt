@@ -1,22 +1,33 @@
-# Phase 1 — Data generation + OCR + Chunking
-reportlab==4.2.5          # generate synthetic PDF reports
-pymupdf==1.24.14          # fast PDF text extraction (text-based PDFs)
-Pillow==11.0.0            # image handling (needed by docTR later)
-python-dotenv==1.0.1      # load .env files
-pytest==8.3.4             # testing
-ruff==0.8.4               # linter + formatter
+# Core app — everything needed to run the FastAPI backend (src/api/main.py)
+# and the data ingestion pipeline (extract -> chunk -> embed -> store).
 
-# Phase 2 — Embeddings + Vector DB + Retrieval + LLM Generation
+# Data generation + OCR + chunking
+reportlab==4.2.5              # generate synthetic PDF reports
+pymupdf==1.24.14              # PDF text extraction (text-based PDFs) + PDF writing (scripts/prepare_mtsamples.py)
+Pillow==11.0.0                # image handling
+python-doctr[torch]==1.0.1    # OCR fallback for scanned/image documents (src/ocr/extractor.py)
+python-dotenv==1.0.1          # load .env files
+
+# Embeddings + Vector DB + Retrieval + LLM generation
 sentence-transformers==3.3.1  # loads bge-small-en for embeddings + cross-encoder reranker
-chromadb==0.6.3               # local vector database (dev)
-groq==1.5.0                   # Groq API — free, no regional restrictions, Llama 3.3 70B
-rank-bm25==0.2.2              # BM25 keyword search for hybrid retrieval (RRF fusion)
+chromadb==0.6.3                # local vector database (dev)
+groq==0.37.1                   # Groq API — Llama 3.3 70B for generation + query rewriting
+rank-bm25==0.2.2                # BM25 keyword search for hybrid retrieval (RRF fusion)
 
-# Phase 3 — Backend + Evaluation
-fastapi==0.115.6              # backend API
-uvicorn==0.32.1               # ASGI server to run FastAPI
-python-multipart==0.0.18      # required for FastAPI file uploads
+# Backend
+fastapi==0.115.6               # backend API
+uvicorn==0.32.1                # ASGI server to run FastAPI
+python-multipart==0.0.18       # required for FastAPI file uploads
 
-# Phase 3 (uncomment when ready):
-# ragas==0.2.6                  # eval metrics: faithfulness, answer relevancy, context precision
-# qdrant-client==1.12.1         # Qdrant Cloud (deployed vector DB — swap from ChromaDB)
+# Dev / testing
+pytest==8.3.4                  # testing
+ruff==0.8.4                    # linter + formatter
+
+# --- Optional, not needed to run the app ---
+# The RAGAS eval harness (scripts/evaluate.py) has its own heavier, separate
+# dependency set (ragas, langchain-*, google-genai, instructor, jsonref) —
+# deliberately NOT in this file so the deployed app's image stays lean.
+# See requirements-eval.txt to run evals locally.
+
+# Qdrant Cloud migration (planned deploy target, not yet wired in):
+# qdrant-client==1.12.1
