@@ -1,9 +1,14 @@
 FROM python:3.13-slim
 
-# opencv-python (a docTR dependency) needs these system libraries present at
+# build-essential: chromadb depends on chroma-hnswlib, a C++ extension with
+# no prebuilt wheel for this platform/Python combo — pip falls back to
+# compiling it from source, which fails outright on a "slim" image (that's
+# exactly what "slim" means: no compiler included at all).
+# libgl1 etc.: opencv-python (a docTR dependency) needs these present at
 # runtime on Debian-based images, or it fails with "libGL.so.1: cannot open
 # shared object file" the moment anything imports it.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     libgl1 \
     libglib2.0-0 \
     libsm6 \
