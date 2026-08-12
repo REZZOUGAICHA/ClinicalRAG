@@ -16,5 +16,9 @@ data/ocr_test_printed/
 *.egg-info/
 .ruff_cache/
 .pytest_cache/
+# Fine-tuned model weights (1GB+, exceeds GitHub's 100MB file limit) —
+# see notebooks/finetune_trocr_rxhandbd.ipynb to reproduce, or share via
+# Hugging Face Hub / Git LFS / cloud storage instead of this repo.
+models/
 # HuggingFace model cache (downloaded automatically, not committed)
 .cache/
