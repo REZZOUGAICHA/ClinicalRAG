@@ -25,6 +25,22 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp"}
 
 _ocr_model = None
 
+# Fine-tuned handwriting recognizer (see notebooks/finetune_trocr_rxhandbd.ipynb).
+# Not committed to the repo (1.3GB, exceeds GitHub's file-size limit) — if it's
+# not present (e.g. a deploy environment that didn't bundle it), the pipeline
+# just skips this enhancement and falls back to docTR's own recognition, which
+# still works, just worse on genuine handwriting. See get_trocr_model().
+TROCR_MODEL_PATH = Path("models/trocr-finetuned-rxhandbd")
+_trocr_processor = None
+_trocr_model = None
+
+# docTR's own recognition reports a per-word confidence. Below this, treat the
+# word as likely wrong and worth re-reading with the handwriting specialist.
+# This is a heuristic default, not a rigorously tuned number — printed text
+# recognized correctly tends to score 0.9+; genuinely garbled/illegible
+# handwriting scores much lower, so 0.5 is a reasonable dividing line.
+LOW_CONFIDENCE_THRESHOLD = 0.5
+
 
 @dataclass
 class ExtractedPage:
@@ -101,6 +117,78 @@ def get_ocr_model():
             straighten_pages=True,
         )
     return _ocr_model
+
+
+def get_trocr_model():
+    """
+    Lazy-load the RxHandBD-fine-tuned TrOCR handwriting recognizer, if it's
+    present on disk. Returns (None, None) if it isn't, so callers can degrade
+    gracefully instead of crashing — this model is a large, optional artifact,
+    not a hard dependency of the OCR pipeline.
+
+    IMPORTANT CAVEAT (measured, not assumed — see scripts/test_ocr_generalization.py):
+    fine-tuning narrowly on RxHandBD's medical vocabulary made this model
+    dramatically better at reading medical handwriting (12.5% -> 47.5% exact
+    match) but dramatically WORSE at general handwriting (53.8% -> 7.7%
+    exact match) — a textbook case of catastrophic forgetting toward a
+    narrow domain. That's exactly why this is used ONLY as a targeted re-read
+    of specific low-confidence words (see _apply_handwriting_recognition),
+    never as a blanket replacement for docTR's own, more general recognition.
+    """
+    global _trocr_processor, _trocr_model
+    if _trocr_model is None:
+        if not TROCR_MODEL_PATH.exists():
+            return None, None
+        from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+        print(f"  Loading fine-tuned handwriting model from {TROCR_MODEL_PATH}...")
+        _trocr_processor = TrOCRProcessor.from_pretrained(str(TROCR_MODEL_PATH))
+        _trocr_model = VisionEncoderDecoderModel.from_pretrained(str(TROCR_MODEL_PATH))
+    return _trocr_processor, _trocr_model
+
+
+def _crop_word(image, geometry, page_height: int, page_width: int):
+    """
+    docTR reports each word's location as relative coordinates (0-1 range):
+    ((x0, y0), (x1, y1)). Convert to absolute pixels and crop. Note
+    page.dimensions is (height, width), the opposite order from PIL's
+    (width, height) — verified directly, easy to get backwards.
+    """
+    from PIL import Image
+
+    (x0, y0), (x1, y1) = geometry
+    left, right = int(x0 * page_width), int(x1 * page_width)
+    top, bottom = int(y0 * page_height), int(y1 * page_height)
+    return Image.fromarray(image).crop((left, top, right, bottom))
+
+
+def _apply_handwriting_recognition(images: list, result) -> None:
+    """
+    For every word docTR itself scored below LOW_CONFIDENCE_THRESHOLD, crop
+    that region and re-read it with the fine-tuned handwriting model, then
+    mutate the word in place. Mutating and re-rendering (rather than
+    reconstructing page text by hand) reuses docTR's own layout/reading-order
+    logic in Page.render() — verified directly that this mutation approach
+    works (Word objects are plain mutable Python objects, not frozen).
+
+    No-op (fast return) if the fine-tuned model isn't available.
+    """
+    processor, model = get_trocr_model()
+    if model is None:
+        return
+
+    for image, page in zip(images, result.pages):
+        height, width = page.dimensions
+        for block in page.blocks:
+            for line in block.lines:
+                for word in line.words:
+                    if word.confidence >= LOW_CONFIDENCE_THRESHOLD:
+                        continue
+                    crop = _crop_word(image, word.geometry, height, width)
+                    pixel_values = processor(images=crop, return_tensors="pt").pixel_values
+                    generated_ids = model.generate(pixel_values)
+                    reread = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+                    if reread:
+                        word.value = reread
 
 
 _MIN_OCR_DIMENSION = 512  # px
