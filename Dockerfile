@@ -13,7 +13,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install dependencies first, in their own layer — this layer only gets
+# CPU-only torch FIRST, from PyTorch's own CPU index — pip's default PyPI
+# wheel for torch bundles full CUDA/GPU runtime libraries (nvidia-cudnn,
+# nvidia-cublas, etc.), adding 2GB+ of libraries that a CPU-only deployment
+# (this one) will never use. Installing the CPU build first means the later
+# `pip install -r requirements.txt` sees torch/torchvision already satisfied
+# and doesn't pull the GPU variant in via python-doctr[torch]'s dependency.
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install the rest of the dependencies in their own layer — this only gets
 # rebuilt when requirements.txt actually changes, not on every code edit.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
