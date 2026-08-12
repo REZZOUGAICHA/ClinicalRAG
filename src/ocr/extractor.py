@@ -104,18 +104,20 @@ def get_ocr_model():
     RECOGNITION (read what it says) — loading both takes a few seconds,
     worth paying once per process rather than per document.
 
-    detect_orientation / straighten_pages: a phone-photographed document is
-    rarely perfectly level the way a flatbed scan is — this compensates.
+    NOT using detect_orientation/straighten_pages: these were added
+    speculatively for phone-photographed (possibly tilted) documents, but
+    never actually verified to help on any real test — and were then
+    directly proven to actively BREAK detection on small padded crops
+    (word-image tests went from finding 1 text block to 0 with these flags
+    on, identical image otherwise). Removed in favor of the plain, tested
+    configuration rather than keeping unverified logic that's now shown to
+    cause real harm.
     """
     global _ocr_model
     if _ocr_model is None:
         from doctr.models import ocr_predictor
         print("  Loading docTR OCR model (detection + recognition)...")
-        _ocr_model = ocr_predictor(
-            pretrained=True,
-            detect_orientation=True,
-            straighten_pages=True,
-        )
+        _ocr_model = ocr_predictor(pretrained=True)
     return _ocr_model
 
 
@@ -233,6 +235,11 @@ def extract_scanned_document(path: Path) -> ExtractedDocument:
     document has no such objects, just pixels. docTR is a real OCR model —
     it looks at the pixels and reads what's actually printed/written there,
     the same way a human would.
+
+    Words docTR itself is unsure about (see LOW_CONFIDENCE_THRESHOLD) get a
+    targeted second opinion from the fine-tuned handwriting model, if it's
+    available — see _apply_handwriting_recognition for why this is a
+    surgical re-read, not a blanket swap.
     """
     from doctr.io import DocumentFile
 
@@ -246,6 +253,7 @@ def extract_scanned_document(path: Path) -> ExtractedDocument:
 
     model = get_ocr_model()
     result = model(images)
+    _apply_handwriting_recognition(images, result)
 
     pages = [
         ExtractedPage(page_number=i + 1, raw_text=page.render())
