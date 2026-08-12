@@ -1,0 +1,28 @@
+# Never bake secrets into the image
+.env
+
+.venv/
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Regenerated fresh during the build (see Dockerfile) — don't copy stale
+# local copies in, and don't waste build-context upload time on them.
+data/processed/
+data/vectorstore/
+data/eval/
+
+# Third-party datasets used only for OCR testing / MTSamples sourcing —
+# not needed to run the app itself.
+data/mtsamples_raw/
+data/ocr_test/
+data/ocr_test_printed/
+
+# Large, optional artifact — not part of this deploy (see README/plan:
+# hosted on the Hugging Face Hub separately, not baked into the image)
+models/
+
+notebooks/
