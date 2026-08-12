@@ -34,12 +34,18 @@ TROCR_MODEL_PATH = Path("models/trocr-finetuned-rxhandbd")
 _trocr_processor = None
 _trocr_model = None
 
-# docTR's own recognition reports a per-word confidence. Below this, treat the
-# word as likely wrong and worth re-reading with the handwriting specialist.
-# This is a heuristic default, not a rigorously tuned number — printed text
-# recognized correctly tends to score 0.9+; genuinely garbled/illegible
-# handwriting scores much lower, so 0.5 is a reasonable dividing line.
-LOW_CONFIDENCE_THRESHOLD = 0.5
+# Routing is PAGE-level (average confidence across all words on a page), not
+# per-word. Per-word confidence was tried first and directly disproven: on
+# real RxHandBD samples, a wrong prediction ('VASCO' for 'Losectil') scored
+# 0.974 confidence while a correct one ('Fixgut') scored 0.812 — no per-word
+# threshold can separate right from wrong, because docTR's confidence isn't
+# calibrated for out-of-domain input (handwriting). Page-level AVERAGES do
+# separate cleanly, measured directly (scripts show this):
+#   FUNSD (printed, real scanned forms):   page averages 0.863-0.946 (mean 0.906)
+#   RxHandBD (real handwriting):           page averages 0.206-0.723 (mean 0.426)
+# Zero overlap between the two samples. 0.75 sits in that gap with margin on
+# both sides.
+PAGE_CONFIDENCE_THRESHOLD = 0.75
 
 
 @dataclass
@@ -165,12 +171,18 @@ def _crop_word(image, geometry, page_height: int, page_width: int):
 
 def _apply_handwriting_recognition(images: list, result) -> None:
     """
-    For every word docTR itself scored below LOW_CONFIDENCE_THRESHOLD, crop
-    that region and re-read it with the fine-tuned handwriting model, then
-    mutate the word in place. Mutating and re-rendering (rather than
-    reconstructing page text by hand) reuses docTR's own layout/reading-order
-    logic in Page.render() — verified directly that this mutation approach
-    works (Word objects are plain mutable Python objects, not frozen).
+    For any PAGE whose average word confidence falls below
+    PAGE_CONFIDENCE_THRESHOLD (a real, empirically-separated signal that
+    printed vs. handwritten text — see the constant's comment for the
+    measured numbers), re-read every word on that page with the fine-tuned
+    handwriting model and mutate the words in place. Mutating and
+    re-rendering (rather than reconstructing page text by hand) reuses
+    docTR's own layout/reading-order logic in Page.render() — verified
+    directly that this mutation approach works (Word objects are plain
+    mutable Python objects, not frozen).
+
+    Deliberately page-level, not per-word — see PAGE_CONFIDENCE_THRESHOLD's
+    comment for why per-word confidence was tried first and disproven.
 
     No-op (fast return) if the fine-tuned model isn't available.
     """
@@ -179,18 +191,22 @@ def _apply_handwriting_recognition(images: list, result) -> None:
         return
 
     for image, page in zip(images, result.pages):
+        words = [w for b in page.blocks for line in b.lines for w in line.words]
+        if not words:
+            continue
+
+        avg_confidence = sum(w.confidence for w in words) / len(words)
+        if avg_confidence >= PAGE_CONFIDENCE_THRESHOLD:
+            continue  # docTR's own recognition is reliable for this page
+
         height, width = page.dimensions
-        for block in page.blocks:
-            for line in block.lines:
-                for word in line.words:
-                    if word.confidence >= LOW_CONFIDENCE_THRESHOLD:
-                        continue
-                    crop = _crop_word(image, word.geometry, height, width)
-                    pixel_values = processor(images=crop, return_tensors="pt").pixel_values
-                    generated_ids = model.generate(pixel_values)
-                    reread = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
-                    if reread:
-                        word.value = reread
+        for word in words:
+            crop = _crop_word(image, word.geometry, height, width)
+            pixel_values = processor(images=crop, return_tensors="pt").pixel_values
+            generated_ids = model.generate(pixel_values)
+            reread = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+            if reread:
+                word.value = reread
 
 
 _MIN_OCR_DIMENSION = 512  # px
