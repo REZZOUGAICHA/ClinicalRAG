@@ -1,0 +1,19 @@
+services:
+  clinicalrag:
+    build: .
+    ports:
+      - "8000:7860"
+    env_file:
+      - .env
+    volumes:
+      # Named volumes, not bind mounts: Docker seeds them from the image's
+      # own baked-in data on first run (the 242 pre-embedded chunks), then
+      # persists anything added after that (e.g. documents uploaded through
+      # the running app) across restarts instead of losing them.
+      - vectorstore:/app/data/vectorstore
+      - processed:/app/data/processed
+    restart: unless-stopped
+
+volumes:
+  vectorstore:
+  processed:
