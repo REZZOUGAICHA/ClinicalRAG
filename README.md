@@ -110,6 +110,17 @@ Then open `http://localhost:8000`.
 
 ## Running with Docker
 
+The easiest way to run this project: no Python environment, no manual pipeline steps. Docker Compose builds the image, indexes the source documents, and starts the app in one command, persisting anything uploaded afterward in named volumes.
+
+```bash
+# create a .env file with GROQ_API_KEY=your-key-here
+docker compose up -d --build
+```
+
+Then open `http://localhost:8010`.
+
+To run the container directly instead of through Compose:
+
 ```bash
 docker build -t clinicalrag .
 docker run -p 7860:7860 -e GROQ_API_KEY=your-key-here clinicalrag
