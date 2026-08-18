@@ -47,7 +47,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 
 # Matches the citation format we instruct the model to use:
 # "[Source: filename.pdf | SECTION NAME]". The model tends to echo the
