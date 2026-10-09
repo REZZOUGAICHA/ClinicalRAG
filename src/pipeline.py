@@ -5,7 +5,7 @@ WHY A SEPARATE ORCHESTRATOR?
 Each module (embedder, store, retriever, generator) has one job.
 The pipeline's job is to wire them together in the right order.
 This separation means:
-- You can swap the LLM (Gemini → Claude → Ollama) by changing only generator.py
+- You can swap the LLM (Groq → Claude → Ollama) by changing only generator.py
 - You can swap the vector DB (ChromaDB → Qdrant) by changing only store.py
 - The pipeline itself never changes
 
@@ -18,12 +18,12 @@ WHAT THIS FUNCTION DOES (step by step):
 2. Search ChromaDB for the 5 most similar chunks
 3. Rerank the top-5 with a cross-encoder to get the best 3
 4. Build a prompt with those 3 chunks + the question
-5. Send to Gemini → get cited answer
+5. Send to the LLM (Groq) → get cited answer
 6. Return everything (answer + sources + debug info)
 """
 
-from src.retrieval.retriever import retrieve
 from src.generation.generator import generate_answer, rewrite_query
+from src.retrieval.retriever import retrieve
 
 
 def ask(query: str, top_k: int = 3, use_reranker: bool = True) -> dict:
