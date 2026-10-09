@@ -1,16 +1,16 @@
 """
-RAGAS evaluation harness — measures retrieval + generation quality with real
-numbers instead of anecdotal "it seemed to work" testing.
+Answer-level eval harness: runs questions from eval/questions.json through
+the real answer path (src.pipeline.ask, or src.agent.ask_agent with
+--system agent) and scores what comes back.
 
-WHY THIS EXISTS:
-Up to this point, every fix in this project (query rewriting for typos,
-parent-document expansion for cross-section questions) was verified by
-manually reading a handful of example responses. That's fine for catching
-bugs, but it doesn't scale and it isn't a number you can put in a CV or
-PhD application. This script runs a fixed set of questions through the
-*actual* pipeline (src.pipeline.ask — same code the API uses) and scores
-each answer on four RAGAS metrics:
+Always computed, no judge needed:
+  key_fact_recall    fraction of the item's key_facts found in the answer
+                     (normalized text match, see scripts/eval_common.py)
+  refused            the answer is the "not found in the documents" reply
+  refused_correctly  for unanswerable items: did it refuse?
+  false_refusal      for answerable items: refused and got no key fact
 
+With --ragas, also the four RAGAS metrics judged by Gemini:
   - Faithfulness      — does every claim in the answer actually appear in
                          the retrieved passages? (catches hallucination)
   - Context Precision  — of the retrieved passages, how many were actually
@@ -19,44 +19,56 @@ each answer on four RAGAS metrics:
                          compared against the reference answer?
   - Answer Relevancy   — does the answer actually address the question
                          asked (not just cite something true but off-topic)?
+RAGAS is skipped for unanswerable items: recall/precision against a
+"not in the documents" reference doesn't measure anything useful.
 
-EVAL SET DESIGN:
-Includes both plain single-section lookups AND the two failure modes this
-project specifically found and fixed:
-  - a cross-section question (patient identity lives in one chunk, the
-    fact asked about lives in a different chunk of the same document —
-    what parent-document expansion fixes)
-  - a deliberately misspelled question, paired with its correctly-spelled
-    twin — what query rewriting fixes. Comparing their scores directly
-    shows whether the typo still degrades retrieval quality.
+Runs are resumable: each finished question goes into
+data/eval/checkpoint_<config>.json, and a rerun with the same --config
+skips it. The checkpoint is kept after a run finishes, so adding --ragas to
+a config that already has answers scores the stored answers instead of
+regenerating them. Delete the checkpoint (or pick a new --config) to get
+fresh answers. A checkpoint written by another --system or with different
+retrieval settings (src/config.py) is refused rather than mixed in.
 
-Usage: python scripts/evaluate.py
+The deterministic scores are recomputed from the stored answers every run,
+so scorer fixes apply to old answers too (scripts/rescore.py does the same
+for finished result files).
+
+Usage:
+  python scripts/evaluate.py --config baseline
+  python scripts/evaluate.py --config baseline --types lookup,cross_section --ragas
+  python scripts/evaluate.py --config agent-v1 --system agent --types multi_hop
 """
 
+import argparse
 import asyncio
+import importlib
 import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
+import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.stdout.reconfigure(encoding="utf-8")
 
-import instructor
-from dotenv import load_dotenv
-from google import genai
-
-from ragas.embeddings import HuggingFaceEmbeddings
-from ragas.llms.base import InstructorLLM
-from ragas.metrics.collections import (
-    AnswerRelevancy,
-    ContextPrecisionWithReference,
-    ContextRecall,
-    Faithfulness,
+from dotenv import load_dotenv  # noqa: E402
+from eval_common import (  # noqa: E402
+    RAGAS_METRICS,
+    RUNS_DIR,
+    aggregate_by_type,
+    append_summary,
+    call_with_groq_retry,
+    deterministic_scores,
+    load_questions,
+    print_report,
+    rescore_row,
+    split_csv,
+    utc_stamp,
 )
 
-from src.pipeline import ask
+from src.config import settings  # noqa: E402
 
 load_dotenv()
 
@@ -64,66 +76,24 @@ load_dotenv()
 # app's own generation (which stays on Groq, see generator.py). Groq's free
 # tier has a 100k-tokens/day cap that a full eval run alone can exhaust, so
 # scoring needs its own independent quota.
-# gemini-3.6-flash's free tier caps at just 20 requests/day — nowhere near
-# enough for a 32-call eval run (8 questions x 4 metrics). gemini-3.1-flash-lite
-# has a much more workable free-tier allowance for this account.
+# gemini-3.1-flash-lite rather than a bigger Gemini model: the bigger ones'
+# free tier allows ~20 requests/day, less than one run needs (4 per question).
 JUDGE_MODEL = "gemini-3.1-flash-lite"
-RESULTS_DIR = Path("data/eval")
-
-# Ground-truth answers pulled directly from the source PDFs (see
-# data/processed/chunks.json) — not guessed, so ContextRecall/Precision
-# scores reflect real retrieval quality, not a mismatched reference.
-EVAL_SET = [
-    {
-        "id": "wbc-lymphoma",
-        "question": "What was the WBC count in the lymphoma patient?",
-        "reference": "The WBC count was 11.2 x 10^9/L, which is high (reference range 4.0-11.0).",
-    },
-    {
-        "id": "hba1c-diabetic",
-        "question": "What is the HbA1c of the diabetic patient?",
-        "reference": "The HbA1c is 9.2%, above the target of <7.0%.",
-    },
-    {
-        "id": "meds-acute-mi-cross-section",
-        "question": "What medications was the acute MI patient discharged with?",
-        "reference": (
-            "Aspirin 100 mg OD, Ticagrelor 90 mg BID, Atorvastatin 80 mg OD, "
-            "Ramipril 5 mg OD, Bisoprolol 5 mg OD, and Pantoprazole 40 mg OD."
-        ),
-    },
-    {
-        "id": "stroke-door-to-needle",
-        "question": "What was the door-to-needle time for the stroke patient's thrombolysis?",
-        "reference": "27 minutes (tPA administered at 10:22).",
-    },
-    {
-        "id": "stroke-anticoagulant-cross-section",
-        "question": "What anticoagulant is the stroke patient on and why?",
-        "reference": (
-            "Apixaban 5 mg BID, for anticoagulation due to newly diagnosed "
-            "atrial fibrillation (the cause of the stroke)."
-        ),
-    },
-    {
-        "id": "sepsis-lactate",
-        "question": "What was the lactate level in the sepsis patient?",
-        "reference": "4.8 mmol/L, critically high (reference <2.0), indicating tissue hypoperfusion.",
-    },
-    {
-        "id": "lymphoma-id-cross-section",
-        "question": "What is the patient ID of the lymphoma patient?",
-        "reference": "SYN-2024-001.",
-    },
-    {
-        "id": "lymphoma-id-typo",
-        "question": "whats the id of lymphoma patien",  # deliberate typo — pairs with the item above
-        "reference": "SYN-2024-001.",
-    },
-]
 
 
 def _build_scorers():
+    # Imported here so runs without --ragas don't need the eval extras installed.
+    import instructor
+    from google import genai
+    from ragas.embeddings import HuggingFaceEmbeddings
+    from ragas.llms.base import InstructorLLM
+    from ragas.metrics.collections import (
+        AnswerRelevancy,
+        ContextPrecisionWithReference,
+        ContextRecall,
+        Faithfulness,
+    )
+
     # ragas's llm_factory(provider="google", ...) doesn't work for our case:
     # it always constructs a *sync* instructor client for Google, but every
     # Collections metric here scores via .ascore() and requires an async
@@ -168,9 +138,11 @@ async def _score_with_retry(coro_fn, max_attempts: int = 6, base_delay: float = 
     """
     for attempt in range(1, max_attempts + 1):
         try:
-            return await coro_fn()
+            # A 503 from Gemini once left a call hanging with no error and the
+            # whole run sat idle for an hour. Treat a stall as transient too.
+            return await asyncio.wait_for(coro_fn(), timeout=120)
         except Exception as e:
-            msg = str(e)
+            msg = "503 timeout" if isinstance(e, TimeoutError) else str(e)
             # 429 = rate limit, 503/UNAVAILABLE = transient "model overloaded"
             # (Google's own error message calls these "usually temporary").
             # Anything else (bad request, auth, etc.) is a real failure —
@@ -186,9 +158,9 @@ async def _score_with_retry(coro_fn, max_attempts: int = 6, base_delay: float = 
 
 
 async def _score_one(scorers: dict, question: str, answer: str, contexts: list[str], reference: str) -> dict:
-    # Gemini's free tier for gemini-3.6-flash caps at 5 requests/minute —
-    # 12s/request minimum sustainable rate. 15s between calls gives margin.
-    # (Groq's per-minute cap was much looser; this pacing is Gemini-specific.)
+    # Paced for a free-tier Gemini cap of 5 requests/minute (12s apart at
+    # minimum); 15s leaves margin. Groq's cap is looser, so this is
+    # Gemini-specific.
     PACING_SECONDS = 15
 
     # Sequential, not gather() — see _score_with_retry for why.
@@ -216,74 +188,144 @@ async def _score_one(scorers: dict, question: str, answer: str, contexts: list[s
     }
 
 
-CHECKPOINT_PATH = RESULTS_DIR / "checkpoint.json"
+def _load_answer_fn(system: str):
+    if system == "pipeline":
+        from src.pipeline import ask
+        return ask
+    try:
+        module = importlib.import_module("src.agent")
+    except ModuleNotFoundError as e:
+        if e.name not in ("src.agent", "src"):
+            raise  # src.agent exists but one of its own imports is missing
+        raise SystemExit("--system agent needs the src/agent package (ask_agent).") from None
+    if not hasattr(module, "ask_agent"):
+        raise SystemExit("src.agent was found but has no ask_agent(question) function.")
+    return module.ask_agent
 
 
-def _save_checkpoint(results: list[dict]) -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    CHECKPOINT_PATH.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
+async def run_eval(args) -> None:
+    items = load_questions(split_csv(args.types), split_csv(args.ids), args.limit)
+    if not items:
+        raise SystemExit("No questions selected.")
+    answer_fn = _load_answer_fn(args.system)
+    retrieval = settings.describe()
 
+    checkpoint_path = RUNS_DIR / f"checkpoint_{args.config}.json"
+    by_id = {}
+    if checkpoint_path.exists():
+        by_id = {r["id"]: r for r in json.loads(checkpoint_path.read_text(encoding="utf-8"))}
+        # Answers from another system or retrieval setup would be silently
+        # averaged into this run's numbers.
+        stale = sorted(i for i, r in by_id.items()
+                       if r.get("system") != args.system or r.get("retrieval") != retrieval)
+        if stale:
+            raise SystemExit(
+                f"{checkpoint_path} has {len(stale)} answer(s) from a different --system or "
+                f"retrieval settings (or written before settings were recorded), e.g. {stale[0]}.\n"
+                f"Use another --config, or delete the checkpoint to start over.")
+        resumed = sorted(set(by_id) & {q["id"] for q in items})
+        if resumed:
+            print(f"Resuming {args.config}: {len(resumed)} question(s) already answered")
 
-async def run_eval():
-    # Resumable: a question already scored in an earlier (possibly crashed)
-    # run is loaded from the checkpoint and skipped, not re-scored. Free-tier
-    # judge quota has proven scarce enough this session that re-doing
-    # already-successful work would be wasteful.
-    results = []
-    done_ids = set()
-    if CHECKPOINT_PATH.exists():
-        results = json.loads(CHECKPOINT_PATH.read_text(encoding="utf-8"))
-        done_ids = {r["id"] for r in results}
-        if done_ids:
-            print(f"Resuming from checkpoint — already have: {sorted(done_ids)}")
+    def save_checkpoint():
+        RUNS_DIR.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text(json.dumps(list(by_id.values()), indent=2, ensure_ascii=False),
+                                   encoding="utf-8")
 
-    scorers = _build_scorers()
+    scorers = _build_scorers() if args.ragas else None
+    last_call = 0.0
 
-    for item in EVAL_SET:
-        if item["id"] in done_ids:
-            continue
+    for item in items:
+        row = by_id.get(item["id"])
+        if row is None:
+            # pace from the start of the previous call, not its end, so slow
+            # answers don't add dead time on top
+            wait = args.pace - (time.monotonic() - last_call)
+            if last_call and wait > 0:
+                time.sleep(wait)
+            print(f"Running: {item['id']} ...")
+            last_call = time.monotonic()
+            result = call_with_groq_retry(answer_fn, item["question"])
+            latency = round(time.monotonic() - last_call, 2)
 
-        print(f"Running: {item['id']} ...")
-        pipeline_result = ask(item["question"], top_k=3)
-        answer = pipeline_result["answer"]
-        contexts = [c["text"] for c in pipeline_result["chunks"]]
+            answer = result["answer"]
+            row = {
+                "id": item["id"],
+                "type": item["type"],
+                "answerable": item["answerable"],
+                "question": item["question"],
+                "answer": answer,
+                "reference": item["reference"],
+                "key_facts": item["key_facts"],
+                "system": args.system,
+                "retrieval": retrieval,
+                "model": result.get("model"),
+                "latency_s": latency,
+                "chunks_retrieved": len(result["chunks"]),
+                "context_sources": [{"source_file": c["source_file"], "section": c["section"]}
+                                    for c in result["chunks"]],
+                "contexts": [c["text"] for c in result["chunks"]],
+                "scores": deterministic_scores(item, answer),
+            }
+            if "gathered_chunks" in result:
+                row["chunks_gathered"] = len(result["gathered_chunks"])
+            if "trace" in result:
+                # Lets scripts/visualize_agent_run.py --from-json redraw any eval run offline.
+                row["route"] = result.get("route")
+                row["trace"] = result["trace"]
+            by_id[item["id"]] = row
+            save_checkpoint()  # persisted immediately — a later crash won't lose this
 
-        scores = await _score_one(scorers, item["question"], answer, contexts, item["reference"])
-        results.append({
-            "id": item["id"],
-            "question": item["question"],
-            "answer": answer,
-            "reference": item["reference"],
-            "chunks_retrieved": len(contexts),
-            "scores": scores,
-        })
-        print(f"  faithfulness={scores['faithfulness']:.2f}  "
-              f"context_precision={scores['context_precision']:.2f}  "
-              f"context_recall={scores['context_recall']:.2f}  "
-              f"answer_relevancy={scores['answer_relevancy']:.2f}")
-        _save_checkpoint(results)  # persisted immediately — a later crash won't lose this
-        await asyncio.sleep(15)  # same rate-limit pacing between questions
+            s = row["scores"]
+            if item["answerable"]:
+                missing = f"  missing={s['missing_facts']}" if s["missing_facts"] else ""
+                print(f"  key_fact_recall={s['key_fact_recall']:.2f}  refused={s['refused']}{missing}")
+            else:
+                print(f"  refused_correctly={s['refused_correctly']}")
 
-    aggregate = {
-        metric: round(sum(r["scores"][metric] for r in results) / len(results), 4)
-        for metric in ("faithfulness", "context_precision", "context_recall", "answer_relevancy")
-    }
+        if scorers and item["answerable"] and not row.get("ragas"):
+            print(f"  RAGAS: {item['id']} ...")
+            row["ragas"] = await _score_one(scorers, row["question"], row["answer"],
+                                            row["contexts"], item["reference"])
+            print("  " + "  ".join(f"{m}={row['ragas'][m]:.2f}" for m in RAGAS_METRICS))
+            save_checkpoint()
+            await asyncio.sleep(15)  # same rate-limit pacing between questions
 
-    print("\n" + "=" * 60)
-    print("AGGREGATE (mean across all questions)")
-    for metric, value in aggregate.items():
-        print(f"  {metric}: {value:.4f}")
-    print("=" * 60)
+    # Scored here rather than trusted from the checkpoint, so resumed answers
+    # are judged by the current scorer and the current eval/questions.json.
+    rows = [rescore_row(by_id[q["id"]], q) for q in items]
+    overall, by_type = aggregate_by_type(rows)
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_path = RESULTS_DIR / f"eval_{timestamp}.json"
-    out_path.write_text(
-        json.dumps({"aggregate": aggregate, "results": results}, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    CHECKPOINT_PATH.unlink(missing_ok=True)  # eval completed in full — checkpoint no longer needed
+    print()
+    print_report(overall, by_type)
+
+    run_info = {"system": args.system, "ragas": args.ragas, "retrieval": retrieval,
+                "selection": {"types": args.types, "ids": args.ids, "limit": args.limit}}
+    out_path = RUNS_DIR / f"eval_{args.config}_{utc_stamp()}.json"
+    out_path.write_text(json.dumps({"config": args.config, **run_info, "aggregate": overall,
+                                    "by_type": by_type, "results": rows}, indent=2, ensure_ascii=False),
+                        encoding="utf-8")
+    append_summary({"script": "evaluate", "config": args.config, **run_info,
+                    "aggregate": overall, "by_type": by_type})
+    # The checkpoint stays: a later --ragas run (or a rescore) reuses its answers.
     print(f"\nFull results saved to: {out_path}")
+    print(f"Answers kept in: {checkpoint_path}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--config", default=None, help="run label (default: the --system name)")
+    parser.add_argument("--system", choices=("pipeline", "agent"), default="pipeline")
+    parser.add_argument("--types", help="comma-separated question types, e.g. lookup,cross_section")
+    parser.add_argument("--ids", help="comma-separated question ids")
+    parser.add_argument("--limit", type=int, help="only the first N selected questions")
+    parser.add_argument("--ragas", action="store_true", help="also score with RAGAS (Gemini judge)")
+    parser.add_argument("--pace", type=float, default=10.0,
+                        help="minimum seconds between answer calls; Groq's free tier caps tokens/minute")
+    args = parser.parse_args()
+    args.config = args.config or args.system
+    asyncio.run(run_eval(args))
 
 
 if __name__ == "__main__":
-    asyncio.run(run_eval())
+    main()
