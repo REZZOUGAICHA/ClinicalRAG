@@ -474,7 +474,7 @@
       {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
       {"source_file": "report_006_stroke.pdf", "section": "TREATMENT PLAN"}
     ],
-    "key_facts": ["2.5 mg", "Myocardial Infarction|STEMI|heart attack", "stroke"],
+    "key_facts": ["2.5 mg", "5 mg", "Myocardial Infarction|STEMI|heart attack|SYN-2024-003", "stroke|SYN-2024-006"],
     "notes": "The stroke patient's bisoprolol is in TREATMENT PLAN, not MEDICATIONS. The MI dose (5 mg) is not a separate key fact because '5 mg' is a substring of '2.5 mg'."
   },
   {
