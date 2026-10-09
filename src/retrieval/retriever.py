@@ -20,8 +20,10 @@ Then fuse them with RRF (Reciprocal Rank Fusion) before the reranker.
 FULL PIPELINE:
   Stage 1a: ChromaDB dense search → top 10 semantic candidates
   Stage 1b: BM25 keyword search  → top 10 keyword candidates
-  Stage 2:  RRF fusion           → merged, deduplicated top 10
+  Stage 2:  RRF fusion           → merged, deduplicated shortlist of up to
+                                   RAG_RERANK_POOL (20 by default)
   Stage 3:  Cross-encoder rerank → precise final ranking
+(the per-stage counts are configurable, see src/config.py)
   Output:   top_k results (default 3) with source metadata
 
 WHY BM25 SPECIFICALLY?
@@ -50,27 +52,63 @@ and individual Rank Learning Methods", SIGIR 2009.
 """
 
 import json
+import re
+import threading
 from pathlib import Path
 
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder
 
+from src.config import RERANKERS, settings
 from src.embeddings.embedder import embed_query
+from src.retrieval.contextual import cached_context, indexed_text, load_contexts
 from src.vectorstore.store import search
 
-RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+RERANKER_MODEL = RERANKERS[settings.reranker]
 CHUNKS_PATH = Path("data/processed/chunks.json")
 
 _reranker: CrossEncoder | None = None
 _bm25_index: BM25Okapi | None = None
 _bm25_chunks: list[dict] | None = None
+# The API serves requests from a thread pool and an upload resets the cache,
+# so the index and its chunk list are only ever read and swapped together.
+_bm25_lock = threading.Lock()
+# chunk_id -> LLM-written context, filled only when RAG_CONTEXTUAL=1
+_contexts: dict[str, str] = {}
+
+# A token is a run of word characters, optionally joined by ".", "-" or "/"
+# when another word character follows. That keeps "syn-2024-001", "9.2" and
+# "mg/dl" whole but drops sentence punctuation ("wbc," -> "wbc").
+_TOKEN_RE = re.compile(r"\w+(?:[./-]\w+)*")
+
+
+def tokenize(text: str) -> list[str]:
+    """
+    Lowercased BM25 tokens. Used for both the index and the query, so the two
+    can't drift apart.
+
+    Hyphen/slash compounds also emit their parts, so "post-op" still matches a
+    query for "post" and "nausea/vomiting" matches "nausea". Decimals are not
+    split: "9" and "2" on their own would only add noise.
+    """
+    tokens = []
+    for tok in _TOKEN_RE.findall(text.lower()):
+        tokens.append(tok)
+        if "-" in tok or "/" in tok:
+            tokens.extend(re.split(r"[-/]", tok))
+    return tokens
 
 
 def get_reranker() -> CrossEncoder:
     global _reranker
     if _reranker is None:
         print(f"  Loading reranker: {RERANKER_MODEL} ...")
-        _reranker = CrossEncoder(RERANKER_MODEL)
+        if settings.reranker == "ms-marco-minilm":
+            _reranker = CrossEncoder(RERANKER_MODEL)
+        else:
+            # these accept 512 tokens; set it explicitly rather than trusting
+            # each repo's config
+            _reranker = CrossEncoder(RERANKER_MODEL, max_length=512)
     return _reranker
 
 
@@ -88,16 +126,23 @@ def _get_bm25() -> tuple[BM25Okapi | None, list[dict] | None]:
     chunk_ids. Reading from JSON is simpler than re-querying ChromaDB for all
     documents. Both sources are always in sync after ingest.
     """
-    global _bm25_index, _bm25_chunks
-    if _bm25_index is None:
-        if not CHUNKS_PATH.exists():
-            return None, None
-        with open(CHUNKS_PATH, encoding="utf-8") as f:
-            chunks = json.load(f)
-        tokenized = [c["text"].lower().split() for c in chunks]
-        _bm25_index = BM25Okapi(tokenized)
-        _bm25_chunks = chunks
-    return _bm25_index, _bm25_chunks
+    global _bm25_index, _bm25_chunks, _contexts
+    with _bm25_lock:
+        if _bm25_index is None:
+            if not CHUNKS_PATH.exists():
+                return None, None
+            with open(CHUNKS_PATH, encoding="utf-8") as f:
+                chunks = json.load(f)
+            contexts = {}
+            if settings.contextual:
+                # Stale or missing contexts are skipped; that chunk is indexed on
+                # its own text, same as without contextual retrieval.
+                cache = load_contexts()
+                contexts = {c["chunk_id"]: ctx for c in chunks
+                            if (ctx := cached_context(c, cache)) is not None}
+            tokenized = [tokenize(indexed_text(c["text"], contexts.get(c["chunk_id"]))) for c in chunks]
+            _bm25_index, _bm25_chunks, _contexts = BM25Okapi(tokenized), chunks, contexts
+        return _bm25_index, _bm25_chunks
 
 
 def _bm25_search(query: str, n: int = 10) -> list[dict]:
@@ -113,8 +158,7 @@ def _bm25_search(query: str, n: int = 10) -> list[dict]:
     if bm25 is None:
         return []
 
-    tokens = query.lower().split()
-    raw_scores = bm25.get_scores(tokens)
+    raw_scores = bm25.get_scores(tokenize(query))
 
     top_indices = sorted(range(len(raw_scores)), key=lambda i: raw_scores[i], reverse=True)[:n]
 
@@ -194,7 +238,15 @@ def _expand_to_parent_documents(chunks: list[dict]) -> list[dict]:
     return expanded
 
 
-def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict]:
+def retrieve(
+    query: str,
+    top_k: int = 3,
+    use_reranker: bool = True,
+    *,
+    expand_parents: bool = True,
+    rerank_pool: int | None = None,
+    first_stage_k: int | None = None,
+) -> list[dict]:
     """
     Hybrid retrieval: dense + sparse → RRF → rerank → top_k → parent expansion.
 
@@ -204,6 +256,10 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
                       note the final return can be larger, since sibling
                       chunks from the same source document(s) get appended
         use_reranker: set False to skip Stage 3 (faster, less precise)
+        expand_parents: set False to get just the ranked top_k, without
+                      sibling chunks appended (used by the retrieval eval)
+        rerank_pool, first_stage_k: override RAG_RERANK_POOL /
+                      RAG_FIRST_STAGE_K (see src/config.py) for this call
 
     Returns list of dicts: chunk_id, text, source_file, section, score,
                            reranker_score (if reranker used)
@@ -212,14 +268,17 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
     "Why cast to 10 candidates in each stage before fusion?"
     Because with two retrieval methods, we need a wider initial pool — the
     interesting candidates might be ranked 6th in semantic but 1st in BM25.
-    RRF finds them; the reranker then does precise final scoring on all 10.
+    RRF finds them; the reranker then rescores the fused shortlist.
     """
+    rerank_pool = rerank_pool or settings.rerank_pool
+    first_stage_k = first_stage_k or settings.first_stage_k
+
     # Stage 1a: dense semantic search
-    semantic_results = search(embed_query(query), n_results=10)
+    semantic_results = search(embed_query(query), n_results=first_stage_k)
     semantic_ids = [r["chunk_id"] for r in semantic_results]
 
     # Stage 1b: sparse keyword search
-    keyword_results = _bm25_search(query, n=10)
+    keyword_results = _bm25_search(query, n=first_stage_k)
     keyword_ids = [r["chunk_id"] for r in keyword_results]
 
     # Stage 2: RRF fusion — merge both ranked lists by rank position
@@ -230,25 +289,30 @@ def retrieve(query: str, top_k: int = 3, use_reranker: bool = True) -> list[dict
     for r in semantic_results + keyword_results:
         chunk_lookup[r["chunk_id"]] = r
 
-    # Take top 5 after RRF — not all 10+10.
-    # RRF already did the coarse ranking; the reranker only needs a small
-    # shortlist to do precision scoring. Passing 10 to the reranker doubled
-    # inference time with negligible quality gain over 5.
-    candidates = [chunk_lookup[cid] for cid in fused_ids[:5] if cid in chunk_lookup]
+    # Take the top rerank_pool (default 20) after RRF, not all 10+10.
+    # RRF already did the coarse ranking; the reranker only needs a short
+    # list. Reranker cost grows linearly with the pool (see
+    # eval/results/retrieval_experiments.md for measured numbers).
+    candidates = [chunk_lookup[cid] for cid in fused_ids[:rerank_pool] if cid in chunk_lookup]
 
     if not use_reranker or len(candidates) <= 1:
-        return _expand_to_parent_documents(candidates[:top_k])
+        top = candidates[:top_k]
+        return _expand_to_parent_documents(top) if expand_parents else top
 
-    # Stage 3: cross-encoder reranking on the top-5 fused candidates
+    # Stage 3: cross-encoder reranking on the fused candidates
     reranker = get_reranker()
-    pairs = [(query, c["text"]) for c in candidates]
-    reranker_scores = reranker.predict(pairs)
+    if settings.rerank_with_context:
+        _get_bm25()  # loads _contexts
+        pairs = [(query, indexed_text(c["text"], _contexts.get(c["chunk_id"]))) for c in candidates]
+    else:
+        pairs = [(query, c["text"]) for c in candidates]
+    reranker_scores = reranker.predict(pairs, batch_size=settings.rerank_batch_size)
 
     for i, c in enumerate(candidates):
         c["reranker_score"] = float(reranker_scores[i])
 
     top = sorted(candidates, key=lambda c: c["reranker_score"], reverse=True)[:top_k]
-    return _expand_to_parent_documents(top)
+    return _expand_to_parent_documents(top) if expand_parents else top
 
 
 def reset_bm25() -> None:
@@ -257,5 +321,5 @@ def reset_bm25() -> None:
     Call this after ingesting a new document so BM25 picks up the new chunks.
     """
     global _bm25_index, _bm25_chunks
-    _bm25_index = None
-    _bm25_chunks = None
+    with _bm25_lock:
+        _bm25_index, _bm25_chunks = None, None

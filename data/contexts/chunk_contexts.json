@@ -1,0 +1,1454 @@
+{
+  "mts_001_wound-debridement__DESCRIPTION_OF_PROCEDURE__3": {
+    "context": "Surgical report for a patient with an infected prosthetic vascular graft and diabetes undergoing wound debridement. Details the operative steps, including graft removal, irrigation, VAC placement, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_001_wound-debridement.pdf",
+    "text_hash": "9d939a946bc5f881"
+  },
+  "mts_001_wound-debridement__OPERATIONS__2": {
+    "context": "Surgical report for a patient with an infected prosthetic vascular graft and diabetes undergoing wound debridement. Describes the surgical procedures performed: debridement, secondary closure, and VAC insertion.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_001_wound-debridement.pdf",
+    "text_hash": "9847a5b85489a65b"
+  },
+  "mts_001_wound-debridement__POSTOPERATIVE_DIAGNOSES__1": {
+    "context": "Surgical report for a patient with an infected prosthetic vascular graft and diabetes undergoing wound debridement. Reiterates postoperative diagnoses identical to preoperative ones.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_001_wound-debridement.pdf",
+    "text_hash": "b9e339087db8a98c"
+  },
+  "mts_001_wound-debridement__PREOPERATIVE_DIAGNOSES__0": {
+    "context": "Surgical report for a patient with an infected prosthetic vascular graft and diabetes undergoing wound debridement. Lists preoperative diagnoses: infected graft, diabetes, peripheral vascular disease.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_001_wound-debridement.pdf",
+    "text_hash": "d39e549ec4d63a9b"
+  },
+  "mts_002_yag-laser-capsulotomy__ANESTHESIA__3": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Anesthesia details: topical tetracaine ophthalmic drops used.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "4908a82b0af50647"
+  },
+  "mts_002_yag-laser-capsulotomy__DESCRIPTION_OF_PROCEDURE__5": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Procedure description including energy, shots, total energy, patient tolerance, and postoperative instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "37b8c9036147d6a1"
+  },
+  "mts_002_yag-laser-capsulotomy__DIAGNOSIS__1": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Diagnosis confirming posterior capsule opacity in the right eye.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "0df2732b485deddf"
+  },
+  "mts_002_yag-laser-capsulotomy__INDICATIONS_FOR_SURGERY__4": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Surgical indications explaining vision decline due to posterior capsule opacity and informed consent.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "a684d5cd126ae2b1"
+  },
+  "mts_002_yag-laser-capsulotomy__OPERATIVE_PROCEDURES__2": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Operative procedure describing YAG laser posterior capsulotomy on the right eye.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "f4c3b6daaeb35a93"
+  },
+  "mts_002_yag-laser-capsulotomy__PREOPERATIVE_DIAGNOSIS__0": {
+    "context": "YAG laser capsulotomy procedure report for a patient with visually significant posterior capsule opacity in the right eye. Preoperative diagnosis noting posterior capsule opacity and postoperative status.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_002_yag-laser-capsulotomy.pdf",
+    "text_hash": "d7662472b182fab1"
+  },
+  "mts_003_wound-closure-debridement-hydrocephalus__INDICATION_FOR_SURGERY__1": {
+    "context": "Operative report for a 26-year-old female undergoing complex wound closure and debridement for a suspected cerebrospinal fluid fistula. Indication for surgery detailing the patient's history of shunt, hydrocephalus, and persistent wound drainage.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_003_wound-closure-debridement-hydrocephalus.pdf",
+    "text_hash": "ca7084fac24775e4"
+  },
+  "mts_003_wound-closure-debridement-hydrocephalus__POSTOP_DIAGNOSIS__3": {
+    "context": "Operative report for a 26-year-old female undergoing complex wound closure and debridement for a suspected cerebrospinal fluid fistula. Postoperative diagnosis confirming the same possible diagnoses.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_003_wound-closure-debridement-hydrocephalus.pdf",
+    "text_hash": "10737a5097a06ece"
+  },
+  "mts_003_wound-closure-debridement-hydrocephalus__PREOP_DIAGNOSIS__2": {
+    "context": "Operative report for a 26-year-old female undergoing complex wound closure and debridement for a suspected cerebrospinal fluid fistula. Preoperative diagnosis listing possible cerebrospinal fluid or wound fistula.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_003_wound-closure-debridement-hydrocephalus.pdf",
+    "text_hash": "10737a5097a06ece"
+  },
+  "mts_003_wound-closure-debridement-hydrocephalus__PROCEDURE_DETAIL__4": {
+    "context": "Operative report for a 26-year-old female undergoing complex wound closure and debridement for a suspected cerebrospinal fluid fistula. Procedure details outlining the surgical steps, closure technique, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_003_wound-closure-debridement-hydrocephalus.pdf",
+    "text_hash": "9f89fd867303451b"
+  },
+  "mts_003_wound-closure-debridement-hydrocephalus__TITLE_OF_OPERATION__0": {
+    "context": "Operative report for a 26-year-old female undergoing complex wound closure and debridement for a suspected cerebrospinal fluid fistula. Title of the operation describing the procedure performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_003_wound-closure-debridement-hydrocephalus.pdf",
+    "text_hash": "8571c08ef520c6d2"
+  },
+  "mts_004_2-d-echocardiogram-2__FULL_DOCUMENT__0": {
+    "context": "2-D Echocardiogram report for a patient with hyperdynamic left ventricular function and mild aortic stenosis. Describes cardiac chamber sizes, valve conditions, gradients, and pulmonary pressures, noting hyperdynamic function and mild valve disease.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_004_2-d-echocardiogram-2.pdf",
+    "text_hash": "74c11b8250766f12"
+  },
+  "mts_005_ventricular-ectopy-consult__ALLERGIES__6": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Allergies: patient reports aspirin intolerance but not true allergy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "419847b425a8d996"
+  },
+  "mts_005_ventricular-ectopy-consult__FAMILY_HISTORY__8": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Family history: no premature CAD, daughter with diabetes, child with asthma.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "3493bb0f302f3b3b"
+  },
+  "mts_005_ventricular-ectopy-consult__ILLNESS__1": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Patient history: 69-year-old with CAD, peripheral vascular disease, stent, pneumonia, PVCs, no chest pain.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "6ce858bfd86b3e3b"
+  },
+  "mts_005_ventricular-ectopy-consult__IMAGING_STUDIES__11": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Imaging: 2009 echocardiogram showing mild biatrial enlargement, EF 40%, mild MR, diastolic dysfunction grade 2.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "b91e95215edd4600"
+  },
+  "mts_005_ventricular-ectopy-consult__INTOLERANCE_FOR_HIS_STOMACH_AND_STOMACH_UPSET__7": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Intolerance: stomach upset with aspirin, no true allergy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "fb83b7cbc58c1afc"
+  },
+  "mts_005_ventricular-ectopy-consult__MEDICATIONS_AT_HOME__5": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Home medications: aspirin, clopidogrel, allopurinol, levothyroxine, lisinopril, metoprolol, atorvastatin.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "2a9dd56c2b2ded93"
+  },
+  "mts_005_ventricular-ectopy-consult__PAST_MEDICAL_HISTORY__3": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Past medical history: CAD, peripheral vascular disease, COPD, hypertension.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "430a91a2c7531821"
+  },
+  "mts_005_ventricular-ectopy-consult__PAST_SURGICAL_HISTORY__4": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Past surgical history: fem-popliteal bypass, neck fusion, coronary stent.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "6f96a105e1e76cbf"
+  },
+  "mts_005_ventricular-ectopy-consult__PHYSICAL_EXAMINATION__10": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Physical exam: vitals, HEENT, neck, cardiovascular, lungs, abdomen, extremities, neuro.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "388bd2d48aec91e1"
+  },
+  "mts_005_ventricular-ectopy-consult__REASON_FOR_CONSULTATION__0": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Reason for consultation: ventricular ectopy and coronary artery disease history.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "392cfbcbc3c2b9b9"
+  },
+  "mts_005_ventricular-ectopy-consult__REVIEW_OF_SYSTEMS__2": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Review of systems: constitutional, ocular, ENT, cardiovascular, respiratory, musculoskeletal, GU, neuro, endocrine, hematologic, allergic findings.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "692a3a63d22a482e"
+  },
+  "mts_005_ventricular-ectopy-consult__SOCIAL_HISTORY__9": {
+    "context": "Consultation note for a 69-year-old male with ventricular ectopy and coronary artery disease. Social history: married, retired, smoker 50 pack-years, no quit plan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_005_ventricular-ectopy-consult.pdf",
+    "text_hash": "f4d85e4979e4f2ac"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__BRADY_PARAMETER_SETTINGS_ARE_AS_FOLLOWS__8": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Outlines the pacemaker’s amplitude, pulse, and sensitivity settings.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "1c900fdaee5d34cb"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__COMPLICATIONS__1": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. States that no complications occurred.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__ESTIMATED_BLOOD_LOSS__2": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Notes minimal estimated blood loss.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "b308cd570e293f2c"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__IMPLANT_DEVICE__6": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Lists the pulse generator model, name, and serial number.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "a84b533428a54ac2"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__INDICATION__4": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Provides patient demographics, diagnosis, and indication for pacemaker.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "a15db750444564f6"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__PROCEDURE_PERFORMED__0": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Describes the insertion of a VVIR permanent pacemaker.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "f1a3179887f10d58"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__PROCEDURE__5": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Details the procedural steps, anesthesia, and device implantation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "344eb7b0b92f19d8"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__SITE__3": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Specifies left subclavian vein access site.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "fc1a56bd12050dbf"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__STIMULATION_THRESHOLDS__10": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Reports stimulation thresholds, post-procedure status, and follow-up plan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "bcde1bc09ba74374"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__VENTRICLE_LEAD__7": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Describes the ventricular lead model, serial number, and placement.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "3673487c955e79ab"
+  },
+  "mts_006_vvir-permanent-pacemaker-insertion__VVIR__9": {
+    "context": "Clinical procedure report for a VVIR permanent pacemaker insertion in an 87-year-old Caucasian female with critical aortic stenosis and refractory heart failure. Specifies the VVIR lower and upper pacing rates.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf",
+    "text_hash": "d72132664a862bdd"
+  },
+  "mts_007_x-ray-neck-soft-tissues__EXAM__0": {
+    "context": "X-ray report of soft tissues of the neck for a patient with left-side neck swelling. Describes the two views of the neck’s soft tissues performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_007_x-ray-neck-soft-tissues.pdf",
+    "text_hash": "ed642aa61f5093af"
+  },
+  "mts_007_x-ray-neck-soft-tissues__FINDINGS__3": {
+    "context": "X-ray report of soft tissues of the neck for a patient with left-side neck swelling. Summarizes findings: asymmetry, normal trachea, patent airway, normal adenoids/tonsils, normal bones.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_007_x-ray-neck-soft-tissues.pdf",
+    "text_hash": "ba11806c5e3d1c91"
+  },
+  "mts_007_x-ray-neck-soft-tissues__HISTORY__1": {
+    "context": "X-ray report of soft tissues of the neck for a patient with left-side neck swelling. States the patient’s presenting complaint of left-side neck swelling.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_007_x-ray-neck-soft-tissues.pdf",
+    "text_hash": "9c4552df920b78ef"
+  },
+  "mts_007_x-ray-neck-soft-tissues__IMPRESSION__4": {
+    "context": "X-ray report of soft tissues of the neck for a patient with left-side neck swelling. Provides impression: patent airway, no significant swelling, slight left-side asymmetry.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_007_x-ray-neck-soft-tissues.pdf",
+    "text_hash": "773fb8a7454d0720"
+  },
+  "mts_007_x-ray-neck-soft-tissues__TECHNIQUE__2": {
+    "context": "X-ray report of soft tissues of the neck for a patient with left-side neck swelling. Details the imaging technique and notes no prior radiographs but an ultrasound was done.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_007_x-ray-neck-soft-tissues.pdf",
+    "text_hash": "f18246ccf4205164"
+  },
+  "mts_008_ultrasound-ob-5__BIOMETRY__3": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. Biometric measurements, estimated fetal weight, gestational age, and dating information.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "4fd91e4298d738ba"
+  },
+  "mts_008_ultrasound-ob-5__BPM__1": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. Summary of fetal presentation, placental location, and placental grade.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "f272e8eba87df00f"
+  },
+  "mts_008_ultrasound-ob-5__FETAL_ANATOMY__4": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. Detailed fetal anatomical findings across multiple organ systems.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "5d3677efa29561a5"
+  },
+  "mts_008_ultrasound-ob-5__GENERAL_EVALUATION__0": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. General assessment of fetal heart activity and presentation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "5911dbed41e5650c"
+  },
+  "mts_008_ultrasound-ob-5__II__2": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. Placental previa status and amniotic fluid volume calculation indicating oligohydramnios.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "4de551137fa90de8"
+  },
+  "mts_008_ultrasound-ob-5__IMPRESSION__5": {
+    "context": "Ultrasound report for a 37-week intrauterine pregnancy, detailing fetal anatomy, biometry, and amniotic fluid status. Overall impression, including gestational age, amniotic fluid index, fetal weight, placental grade, and biophysical profile score.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_008_ultrasound-ob-5.pdf",
+    "text_hash": "532318817a1780d4"
+  },
+  "mts_009_whole-body-radionuclide-bone-scan__CONCLUSION__4": {
+    "context": "Bone scan report for a patient with prostate cancer. Summarizes findings: skull abnormality and probable urinary retention, suggesting further imaging if needed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_009_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "26578c5d7415f9fb"
+  },
+  "mts_009_whole-body-radionuclide-bone-scan__FINDINGS__3": {
+    "context": "Bone scan report for a patient with prostate cancer. Reports abnormal tracer uptake in the right parietal skull region and normal uptake elsewhere, plus possible urinary retention.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_009_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "df845ea20ead5921"
+  },
+  "mts_009_whole-body-radionuclide-bone-scan__INDICATION__0": {
+    "context": "Bone scan report for a patient with prostate cancer. Indicates the patient’s prostate cancer as the reason for the scan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_009_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "cdd2f2268adbf644"
+  },
+  "mts_009_whole-body-radionuclide-bone-scan__MDP__2": {
+    "context": "Bone scan report for a patient with prostate cancer. Notes that the skeleton was imaged in both anterior and posterior views.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_009_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "1c8e19d650dafe21"
+  },
+  "mts_009_whole-body-radionuclide-bone-scan__TECHNIQUE__1": {
+    "context": "Bone scan report for a patient with prostate cancer. Describes the timing and dosage of Technetium-99m injection used in the scan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_009_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "2cf4f62e18c223a7"
+  },
+  "mts_010_wrist-ganglion-excision__POSTOPERATIVE_DIAGNOSIS__1": {
+    "context": "A surgical operative report for a wrist ganglion excision performed on a patient. Postoperative diagnosis confirms the wrist ganglion as the condition addressed during surgery.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_010_wrist-ganglion-excision.pdf",
+    "text_hash": "7dcff519c76ed6db"
+  },
+  "mts_010_wrist-ganglion-excision__PREOPERATIVE_DIAGNOSIS__0": {
+    "context": "A surgical operative report for a wrist ganglion excision performed on a patient. Preoperative diagnosis identifies the wrist ganglion as the condition to be treated.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_010_wrist-ganglion-excision.pdf",
+    "text_hash": "38f3285ceff903b0"
+  },
+  "mts_010_wrist-ganglion-excision__PROCEDURE__2": {
+    "context": "A surgical operative report for a wrist ganglion excision performed on a patient. Procedure section states the excision of the dorsal wrist ganglion.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_010_wrist-ganglion-excision.pdf",
+    "text_hash": "716713797adb6a95"
+  },
+  "mts_010_wrist-ganglion-excision__PROCEDURE__3": {
+    "context": "A surgical operative report for a wrist ganglion excision performed on a patient. Detailed operative steps, including anesthesia, incision, dissection, excision, capsule removal, ligament assessment, closure, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_010_wrist-ganglion-excision.pdf",
+    "text_hash": "62693fd1bff17cae"
+  },
+  "mts_011_vertebroplasty__ANESTHESIA__3": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Anesthesia details: local with IV sedation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "2c52b280f797ac72"
+  },
+  "mts_011_vertebroplasty__COMPLICATIONS__4": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Statement that no complications occurred.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_011_vertebroplasty__DIAGNOSIS__1": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Diagnosis confirming T11 compression fracture with intractable pain.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "f4c0773c2a95ebcc"
+  },
+  "mts_011_vertebroplasty__OPERATION_PERFORMED__2": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Description of the unilateral transpedicular T11 vertebroplasty performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "0d5896a9f70f7c88"
+  },
+  "mts_011_vertebroplasty__PREOPERATIVE_DIAGNOSIS__0": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Preoperative diagnosis and postoperative note indicating T11 fracture with intractable pain.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "142dc277fb8a258d"
+  },
+  "mts_011_vertebroplasty__SUMMARY__5": {
+    "context": "Clinical operative note for a vertebroplasty performed on a patient with a T11 compression fracture. Detailed operative procedure, including positioning, needle placement, cement injection, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_011_vertebroplasty.pdf",
+    "text_hash": "5f794fb500b51ba9"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__ANESTHESIA__3": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Notes that general anesthesia was used.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "d5a93cfcb3b481a2"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__BLOOD_LOSS__4": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. States that blood loss was minimal.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "b308cd570e293f2c"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__COMPLICATIONS__5": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Indicates no complications occurred.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__FINDINGS__6": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Mentions intraoperative findings of a thickened transverse carpal ligament and partially subluxed ulnar nerve.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "0b032a97e6f878a8"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__POSTOPERATIVE_DIAGNOSIS__1": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Reiterates the postoperative diagnoses matching the preoperative ones.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "efae56bc036717d5"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__PREOPERATIVE_DIAGNOSIS__0": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Lists the preoperative diagnoses of right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "6cefa2e58e4eff20"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__PROCEDURES__2": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Describes the surgical procedures performed: ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "f7409bc161ce4198"
+  },
+  "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision__SUMMARY__7": {
+    "context": "Operative report for a patient with right cubital tunnel syndrome, right carpal tunnel syndrome, and right olecranon bursitis undergoing ulnar nerve transposition, carpal tunnel release, and olecranon bursa excision. Provides a detailed operative narrative covering preparation, carpal tunnel release, ulnar nerve transposition, bursa excision, closure, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf",
+    "text_hash": "0e4491471738a9dc"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__ALLERGIES__2": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. No known drug allergies.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "56af3afd2dd32a97"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__CURRENT_MEDICATIONS__3": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Current medications: Prevacid, Humulin, Diprivan, Proventil, Unasyn, Solu-Medrol.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "8515fd589a259683"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__EXAMINATION__6": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Physical examination details are referenced in the hospital chart.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "2628d84fb5d8cad6"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__FAMILY_HISTORY__4": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Family history is noncontributory.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "5f1a250d4db91fbf"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__HISTORY_OF_PRESENT_ILLNESS__0": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Patient presents to ER with airway compromise due to a fishbone.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "5852fb7543fd7d0a"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__HOSPITAL_COURSE__8": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Hospital course describes operative removal of fishbone, intubation, extubation, and discharge planning.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "a6eb278d2b572a31"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__LABORATORY_DATA__7": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Laboratory data are referenced in the hospital chart.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "5a8b6d45344d4ecb"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__PAST_MEDICAL_HISTORY__1": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Past medical history includes diabetes, hypertension, asthma, cholecystectomy, hysterectomy, and cataract.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "a5d635e50d8bd75d"
+  },
+  "mts_013_airway-compromise-foreign-body-er-visit__SOCIAL_HISTORY__5": {
+    "context": "Emergency department encounter for a 17-year-old female with foreign body airway compromise and subsequent removal of a fishbone. Social history: denies illicit drug, alcohol, and tobacco use.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf",
+    "text_hash": "4b972d1712489cd1"
+  },
+  "mts_014_viral-syndrome-er-visit__DIAGNOSIS__5": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Diagnosis: viral respiratory illness.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "da4387a7a80a195f"
+  },
+  "mts_014_viral-syndrome-er-visit__IMPRESSION__4": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Impression is viral syndrome; antibiotics not prescribed due to risk of INR elevation; cough syrup given and patient discharged.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "4904a3696bfef463"
+  },
+  "mts_014_viral-syndrome-er-visit__PAST_HISTORY__2": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Past medical history includes atrial fibrillation on Coumadin, pacerone, and other medications; non-diabetic, former smoker.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "a4108d465eb4e3a0"
+  },
+  "mts_014_viral-syndrome-er-visit__PHYSICAL_EXAMINATION__3": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Physical exam shows stable vitals, normal respiratory and cardiac findings, no distress.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "cc86d0523ec4e7a6"
+  },
+  "mts_014_viral-syndrome-er-visit__REVIEW_OF_SYSTEMS__1": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Review of systems notes no significant HEENT, chest, or GI symptoms.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "9b153e5b20e0874e"
+  },
+  "mts_014_viral-syndrome-er-visit__SUBJECTIVE__0": {
+    "context": "Emergency department visit for a 68-year-old male with viral respiratory illness. Patient presents with three days of cough and green sputum, no shortness of breath, fever, or chills.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_014_viral-syndrome-er-visit.pdf",
+    "text_hash": "23c4da31ad3ab0ca"
+  },
+  "mts_015_uri-soap__ASSESSMENT__6": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Diagnosis is an upper respiratory infection.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "b25bc86d8126eaa4"
+  },
+  "mts_015_uri-soap__HISTORY__2": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Family and social history are noncontributory; no other sick household members.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "052c74b2fcfe3314"
+  },
+  "mts_015_uri-soap__LABORATORY__4": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Laboratory results indicate negative strep test and culture.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "4c854c6dc83c5962"
+  },
+  "mts_015_uri-soap__OBJECTIVE__3": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Physical exam shows a tired adolescent with clear lungs, normal heart, and mild nasal swelling.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "e60c2577d0d60a75"
+  },
+  "mts_015_uri-soap__PAST_MEDICAL_HISTORY__1": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Past medical history is unremarkable except for occasional high blood pressure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "abf8bf6272d3048b"
+  },
+  "mts_015_uri-soap__PLAN__7": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Plan includes symptomatic treatment with decongestants, fluids, rest, and optional pain relievers.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "02b0a4cbebeb3393"
+  },
+  "mts_015_uri-soap__RADIOLOGY__5": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Sinus radiology shows no acute sinusitis.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "820e93e43a9fbb76"
+  },
+  "mts_015_uri-soap__SUBJECTIVE__0": {
+    "context": "Clinical encounter note for a 13-year-old male with an upper respiratory infection. Patient presents with sore throat, congestion, low-grade fever, and fatigue.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_015_uri-soap.pdf",
+    "text_hash": "e2f8e76af5b83dfb"
+  },
+  "mts_016_wound-check-status-post-apr__ASSESSMENT_AND_PLAN__2": {
+    "context": "Clinical visit note for Ms. Connor, 50, post-APR for ulcerative colitis, assessing wound healing and pain management. Provider discusses diet, pain medication plan, and resolves concerns about postoperative numbness and future follow-up.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_016_wound-check-status-post-apr.pdf",
+    "text_hash": "4b24163749fac865"
+  },
+  "mts_016_wound-check-status-post-apr__HISTORY_OF_PRESENT_ILLNESS__0": {
+    "context": "Clinical visit note for Ms. Connor, 50, post-APR for ulcerative colitis, assessing wound healing and pain management. Patient presents for perineal wound check, reports intermittent pain and no infection signs.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_016_wound-check-status-post-apr.pdf",
+    "text_hash": "87a5ffc026c2e1c7"
+  },
+  "mts_016_wound-check-status-post-apr__PHYSICAL_EXAMINATION__1": {
+    "context": "Clinical visit note for Ms. Connor, 50, post-APR for ulcerative colitis, assessing wound healing and pain management. Physical exam shows stable vitals, healed midline scar, functioning ileostomy with normal output.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_016_wound-check-status-post-apr.pdf",
+    "text_hash": "34268734270bd8cd"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__COMPLICATIONS__2": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Statement of no complications during the procedure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__DESCRIPTION_OF_PROCEDURE__3": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Narrative description of the endoscopic removal and evaluation of the esophagus and stomach.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "bc23aa8975dcadf2"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__LOSS__1": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Statement of no loss of blood during the procedure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__PLAN__5": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Post-procedure discharge plan and follow-up instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "e9ded7f83deba334"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__PROCEDURE__0": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Procedure details, diagnoses, and estimated blood loss.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "967c74f98da955fa"
+  },
+  "mts_017_upper-endoscopy-foreign-body-removal__SUMMARY__4": {
+    "context": "Pediatric upper endoscopy for removal of a penny in the proximal esophagus. Summary of the procedure performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf",
+    "text_hash": "4b8ef4c48a6d34f0"
+  },
+  "mts_018_umbilical-hernia-repair-1__PROCEDURE_PERFORMED__0": {
+    "context": "Clinical operative report for umbilical hernia repair on patient mts_018. Describes the umbilical hernia repair procedure performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_018_umbilical-hernia-repair-1.pdf",
+    "text_hash": "34681ccd8272b587"
+  },
+  "mts_018_umbilical-hernia-repair-1__PROCEDURE__1": {
+    "context": "Clinical operative report for umbilical hernia repair on patient mts_018. Details the operative steps, anesthesia, incision, dissection, closure, and postoperative recovery.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_018_umbilical-hernia-repair-1.pdf",
+    "text_hash": "f7cba6d3588102ad"
+  },
+  "mts_019_moyamoya-disease__ANA__19": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Laboratory workup includes anti-cardiolipin antibody, cardiac enzymes, and thyroid function tests.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "f2c20cfabba9ddd3"
+  },
+  "mts_019_moyamoya-disease__B12__20": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Angiography reveals bilateral MCA occlusions, collateral filling, and suspicion of moyamoya; later cervical cancer diagnosis and death are noted.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "8e6326c6d14747d3"
+  },
+  "mts_019_moyamoya-disease__BLE__8": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Lower-extremity assessment shows flexor plantar responses and unremarkable general exam.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "cf5ca6f646508cb6"
+  },
+  "mts_019_moyamoya-disease__BUE__7": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Upper-extremity strength assessment score of 3/3.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "e86574df7434a3b1"
+  },
+  "mts_019_moyamoya-disease__CC__0": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Patient presents with confusion and slurred speech.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "4c98e09b039a8f2c"
+  },
+  "mts_019_moyamoya-disease__COURSE__17": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. MRI indicates old lacunar infarct, acute left caudate edema, and slow flow in left MCA, suggesting vasculopathy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "2398fbf4759aa8f2"
+  },
+  "mts_019_moyamoya-disease__CRP__16": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. EKG normal; CT shows hypodensities in basal ganglia and subcortical areas.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "fff6d513ae6216c1"
+  },
+  "mts_019_moyamoya-disease__EXAM__6": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Physical exam shows alertness, speech impairment, right facial weakness, mild right upper-extremity weakness, and normal reflexes.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "421b3ea6b37eab4a"
+  },
+  "mts_019_moyamoya-disease__FHX__3": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Family history is unremarkable.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "bd8b13f8173d4158"
+  },
+  "mts_019_moyamoya-disease__HX__1": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. History of flu-like illness, transient loss of consciousness, emotional lability, and progressive neurological deficits.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "e283a48354374f18"
+  },
+  "mts_019_moyamoya-disease__PMH__2": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Past medical history includes migraine headaches.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "be77487e8cd3f893"
+  },
+  "mts_019_moyamoya-disease__ROS__5": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Review of systems reveals irregular menstruation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "6d05ce9f305af44f"
+  },
+  "mts_019_moyamoya-disease__SHX__4": {
+    "context": "Clinical case report of a 31-year-old woman with suspected moyamoya disease and subsequent cervical cancer. Social history notes divorce, living with boyfriend, three children, no tobacco, occasional alcohol.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_019_moyamoya-disease.pdf",
+    "text_hash": "7150a710341b6ade"
+  },
+  "mts_020_video-eeg-3__IMPRESSION__1": {
+    "context": "EEG video recording of patient mts_020_video-eeg-3.pdf, assessing wakefulness and light sleep for epileptogenic activity. Summarizes abnormal findings, highlights potential epileptogenic process, and recommends clinical correlation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_020_video-eeg-3.pdf",
+    "text_hash": "6b749ebf0df15496"
+  },
+  "mts_020_video-eeg-3__PROCEDURE__0": {
+    "context": "EEG video recording of patient mts_020_video-eeg-3.pdf, assessing wakefulness and light sleep for epileptogenic activity. Describes the EEG background, sharp wave activity, and photic response during a 22-minute recording.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_020_video-eeg-3.pdf",
+    "text_hash": "4cdc48465624be40"
+  },
+  "mts_021_wilson-s-disease-letter__FULL_DOCUMENT__0": {
+    "context": "Letter from a neurologist to a referring doctor about patient A with Wilson's disease and recent atrial fibrillation episode. Introduction of patient A, his Wilson's disease history, recent cardiac event, current medications, and request for anticoagulation and rhythm control advice.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_021_wilson-s-disease-letter.pdf",
+    "text_hash": "f69e72c09c10df21"
+  },
+  "mts_022_vasectomy-4__COMPLICATIONS__4": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Lists complications: none and blood.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "96e4c4de3841ecee"
+  },
+  "mts_022_vasectomy-4__INDICATIONS__6": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Provides indications, consent, and prophylactic antibiotics.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "758a991cd269dd1b"
+  },
+  "mts_022_vasectomy-4__LOSS__5": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Mentions minimal loss during the procedure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "b308cd570e293f2c"
+  },
+  "mts_022_vasectomy-4__MEDICATIONS__3": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Notes anesthesia type: local with conscious sedation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "334daae7b4452032"
+  },
+  "mts_022_vasectomy-4__POSTOPERATIVE_DIAGNOSIS__2": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Reiterates the postoperative diagnosis: fertile male with completed family.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "ac9dd16466c308ae"
+  },
+  "mts_022_vasectomy-4__PREOPERATIVE_DIAGNOSIS__1": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. States the preoperative diagnosis: fertile male with completed family.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "fcf95dbf30e3797f"
+  },
+  "mts_022_vasectomy-4__PROCEDURE_NOTE__7": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Details the surgical steps, anesthesia, and postoperative care.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "38ee1322fad584b0"
+  },
+  "mts_022_vasectomy-4__PROCEDURE__0": {
+    "context": "Elective bilateral vasectomy procedure for a 34-year-old fertile male with completed family. Describes the elective male sterilization via bilateral vasectomy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_022_vasectomy-4.pdf",
+    "text_hash": "d8ea44b6231da621"
+  },
+  "mts_023_whole-body-radionuclide-bone-scan__CONCLUSION__4": {
+    "context": "Bone scan report for a patient with prostate cancer. Summarizes findings: skull abnormality and probable urinary retention, suggesting further imaging if needed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_023_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "26578c5d7415f9fb"
+  },
+  "mts_023_whole-body-radionuclide-bone-scan__FINDINGS__3": {
+    "context": "Bone scan report for a patient with prostate cancer. Reports abnormal tracer activity in the right parietal skull region and normal uptake elsewhere, plus possible urinary retention.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_023_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "df845ea20ead5921"
+  },
+  "mts_023_whole-body-radionuclide-bone-scan__INDICATION__0": {
+    "context": "Bone scan report for a patient with prostate cancer. Indicates the patient's prostate cancer as the reason for the scan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_023_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "cdd2f2268adbf644"
+  },
+  "mts_023_whole-body-radionuclide-bone-scan__MDP__2": {
+    "context": "Bone scan report for a patient with prostate cancer. Notes that the skeleton was imaged in both anterior and posterior views.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_023_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "1c8e19d650dafe21"
+  },
+  "mts_023_whole-body-radionuclide-bone-scan__TECHNIQUE__1": {
+    "context": "Bone scan report for a patient with prostate cancer. Describes the timing and dosage of Technetium-99m injection used in the scan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_023_whole-body-radionuclide-bone-scan.pdf",
+    "text_hash": "2cf4f62e18c223a7"
+  },
+  "mts_024_urology-discharge-summary__ADMITTING_DIAGNOSIS__2": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Lists difficulty voiding as the admitting diagnosis.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "8233d19d47f90f11"
+  },
+  "mts_024_urology-discharge-summary__COMPLICATIONS__1": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. States no complications occurred during the procedure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_024_urology-discharge-summary__COURSE_IN_THE_HOSPITAL__5": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Details the postoperative course and discharge instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "0b7fa806ed4e4d2a"
+  },
+  "mts_024_urology-discharge-summary__DIAGNOSIS__6": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Reiterates the diagnosis and follow-up plan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "4846388bd82a7555"
+  },
+  "mts_024_urology-discharge-summary__HISTORY__3": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Provides patient demographics and physical exam findings.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "e9b2c49810f8659f"
+  },
+  "mts_024_urology-discharge-summary__LABORATORY_DATA__4": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Summarizes laboratory results and imaging studies.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "5468aaf8c99638d8"
+  },
+  "mts_024_urology-discharge-summary__PROCEDURES__0": {
+    "context": "Discharge summary for a 67-year-old Hispanic male with enlarged prostate and benign bladder neck obstruction. Describes the cystourethroscopy and transurethral resection of prostate performed.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_024_urology-discharge-summary.pdf",
+    "text_hash": "bcdbc3b197384861"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__ANESTHESIA__3": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Anesthesia administered: local only.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "c946276dd2d84a0f"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__COMPLICATIONS__5": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. No complications reported.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__DIAGNOSES__1": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Duplicate list of preoperative diagnoses reiterated in the diagnoses section.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "4f8dee3609e5f793"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__DISPOSITION__7": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Disposition: patient and baby remain in the LDR in stable condition.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "1449647fc449f8ee"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__ESTIMATED_BLOOD_LOSS__4": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Estimated blood loss of 300 mL.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "7c1d633169ef954f"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__FINDINGS__6": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Findings: live male infant, Apgar scores, intact placenta with three-vessel cord.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "400b7544304c1519"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__PREOPERATIVE_DIAGNOSES__0": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Preoperative diagnoses including pregnancy status, HSV serology, and fetal heart concerns.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "cd2fb1dc9ec23945"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__PROCEDURES__2": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Procedures performed: vacuum delivery and repair of third-degree lacerations.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "b87ef02ed3290cfa"
+  },
+  "mts_025_vaginal-delivery-vacuum-assisted__SUMMARY__8": {
+    "context": "Clinical operative note for a 36-year-old G1 patient undergoing vacuum-assisted vaginal delivery for non-reassuring fetal heart tones. Detailed operative summary covering induction, rapid cervical change, vacuum delivery steps, laceration repair, and postoperative status.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf",
+    "text_hash": "0b5b44ca4fdb2657"
+  },
+  "mts_026_vacuum-d-c__ANESTHESIA__4": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. General anesthesia was administered.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "d5a93cfcb3b481a2"
+  },
+  "mts_026_vacuum-d-c__DRAINS__3": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. No drains were placed during the operation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "903ea500e7ccf842"
+  },
+  "mts_026_vacuum-d-c__HISTORY__5": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. Patient history, age, race, gravidity, and reason for the procedure.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "968210444572e07e"
+  },
+  "mts_026_vacuum-d-c__OPERATION_PERFORMED__2": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. Procedure performed: vacuum dilation and curettage.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "530fd3891fc9f246"
+  },
+  "mts_026_vacuum-d-c__POSTOPERATIVE_DIAGNOSIS__1": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. Postoperative diagnosis confirming blighted ovum and severe cramping.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "5b89cc02a65ffa56"
+  },
+  "mts_026_vacuum-d-c__PREOPERATIVE_DIAGNOSIS__0": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. Preoperative diagnosis of blighted ovum with severe cramping.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "80b78d717e0cfc99"
+  },
+  "mts_026_vacuum-d-c__PROCEDURE__6": {
+    "context": "A 21-year-old white female underwent a vacuum dilation and curettage for a blighted ovum. Detailed operative steps, anesthesia, and postoperative recovery.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_026_vacuum-d-c.pdf",
+    "text_hash": "fca568f1e5a0bff4"
+  },
+  "mts_027_ultrasound-ob-8__FINDINGS__1": {
+    "context": "Ultrasound report for a pregnant female, documenting a 6-week intrauterine pregnancy with no detectable fetal heart tones. Details the sonographic measurements of the uterus, gestational sac, yolk sac, crown-rump length, ovaries, and absence of free fluid.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_027_ultrasound-ob-8.pdf",
+    "text_hash": "9ca6ec210422cb06"
+  },
+  "mts_027_ultrasound-ob-8__IMPRESSION__2": {
+    "context": "Ultrasound report for a pregnant female, documenting a 6-week intrauterine pregnancy with no detectable fetal heart tones. Summarizes the findings, noting the pregnancy status, lack of confirmed fetal heart activity, and recommendation for follow-up.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_027_ultrasound-ob-8.pdf",
+    "text_hash": "5889d3181e155f80"
+  },
+  "mts_027_ultrasound-ob-8__REASON_FOR_EXAM__0": {
+    "context": "Ultrasound report for a pregnant female, documenting a 6-week intrauterine pregnancy with no detectable fetal heart tones. Describes the patient's presenting symptoms prompting the ultrasound exam.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "mts_027_ultrasound-ob-8.pdf",
+    "text_hash": "98948e63c1601b4e"
+  },
+  "report_001_lymphoma_staging__CHIEF_COMPLAINT__1": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Chief complaint of painless cervical lymphadenopathy with B-symptoms.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "2851f01f57413a9a"
+  },
+  "report_001_lymphoma_staging__DIAGNOSIS__2": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Final diagnosis, staging, and involved nodal regions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "ec8d410754afcdec"
+  },
+  "report_001_lymphoma_staging__FOLLOW-UP__7": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Follow-up schedule, patient education, and emergency instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "c8b14e182c38e7a4"
+  },
+  "report_001_lymphoma_staging__IMAGING__4": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Imaging results from PET-CT and chest X-ray confirming nodal disease.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "dc34f0b20898c81d"
+  },
+  "report_001_lymphoma_staging__LABORATORY_RESULTS__3": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Laboratory findings showing anemia, leukocytosis, lymphopenia, and elevated inflammatory markers.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "bf4c4b7bd8688222"
+  },
+  "report_001_lymphoma_staging__MEDICATIONS__5": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Current medications including prednisolone and paracetamol.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "ba02a0a86029a1e0"
+  },
+  "report_001_lymphoma_staging__PATIENT_INFORMATION__0": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Patient demographics, identifiers, and referral details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "7a5afe4c4a34e732"
+  },
+  "report_001_lymphoma_staging__TREATMENT_PLAN__6": {
+    "context": "Clinical pathology report for patient SYN-2024-001, a 45-year-old female diagnosed with Hodgkin lymphoma, nodular sclerosis, Ann Arbor stage IIB. Planned ABVD chemotherapy regimen and subsequent radiotherapy evaluation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_001_lymphoma_staging.pdf",
+    "text_hash": "f6c568383933f5cd"
+  },
+  "report_002_diabetes_management__CHIEF_COMPLAINT__1": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Chief complaint of fatigue, polyuria, and elevated home glucose readings.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "df2ef72f602c90e4"
+  },
+  "report_002_diabetes_management__DIAGNOSIS__2": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Primary diagnosis of type 2 diabetes with comorbid conditions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "b5c60282b55d9aa7"
+  },
+  "report_002_diabetes_management__FOLLOW-UP__7": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Follow-up schedule for HbA1c, renal function, and patient self-monitoring.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "c19218a025224e74"
+  },
+  "report_002_diabetes_management__IMAGING__4": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Renal ultrasound findings consistent with early diabetic nephropathy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "89f0064d79e3bca0"
+  },
+  "report_002_diabetes_management__LABORATORY_RESULTS__3": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Laboratory results showing poor glycemic control, renal impairment, and dyslipidemia.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "61393d85043e02d3"
+  },
+  "report_002_diabetes_management__MEDICATIONS__5": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Current medication list and planned addition of Empagliflozin.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "e9b5c06bf82547c0"
+  },
+  "report_002_diabetes_management__PATIENT_INFORMATION__0": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Patient identification, demographics, and referral details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "f255462b62caf462"
+  },
+  "report_002_diabetes_management__TREATMENT_PLAN__6": {
+    "context": "Clinical follow-up report for patient SYN-2024-002, a 58-year-old male with inadequately controlled type 2 diabetes and comorbid hypertension, dyslipidemia, and stage 2 CKD. Treatment plan outlining medication adjustments, diet, BP targets, and referrals.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_002_diabetes_management.pdf",
+    "text_hash": "88227b7bed36d211"
+  },
+  "report_003_acute_mi__CHIEF_COMPLAINT__1": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Chief complaint of acute chest pain with ST-elevation in inferior leads.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "6cd7cd9c3d0f986d"
+  },
+  "report_003_acute_mi__DIAGNOSIS__2": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Diagnosis of inferior STEMI, culprit RCA occlusion, post-PCI TIMI 3 flow, and EF 48%.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "6a100a0709eefc9c"
+  },
+  "report_003_acute_mi__FOLLOW-UP__7": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Follow-up schedule for cardiology and GP visits, driving restriction, and disclaimer of synthetic data.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "a6eb5a2083be4ada"
+  },
+  "report_003_acute_mi__IMAGING__4": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Imaging findings: ECG, echocardiogram with hypokinesia, and coronary angiography with successful stent placement.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "b2d60b78460f5ac8"
+  },
+  "report_003_acute_mi__LABORATORY_RESULTS__3": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Laboratory results showing critically high troponin, elevated CK-MB, BNP, WBC, and glucose.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "81cb5b067418c5d5"
+  },
+  "report_003_acute_mi__MEDICATIONS__5": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Discharge medication list including antiplatelets, statin, ACE inhibitor, beta-blocker, and PPI.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "00a2578105244b1a"
+  },
+  "report_003_acute_mi__PATIENT_INFORMATION__0": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Patient demographics, admission and discharge dates, and attending cardiologist.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "0e7df8ca42dc51f6"
+  },
+  "report_003_acute_mi__TREATMENT_PLAN__6": {
+    "context": "Acute MI discharge summary for patient SYN-2024-003, 69-year-old male with inferior STEMI treated with PCI. Post-discharge treatment plan with rehab, lifestyle counseling, follow-up echo, and NSAID avoidance.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_003_acute_mi.pdf",
+    "text_hash": "51cfa628be5b76e6"
+  },
+  "report_004_pneumonia__CHIEF_COMPLAINT__1": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Description of the patient’s presenting cough, fever, chest pain, and dyspnea.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "ae9c67d87ae106ae"
+  },
+  "report_004_pneumonia__DIAGNOSIS__2": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Diagnosis of mild CAP with likely Streptococcus pneumoniae etiology and CURB-65 score.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "691186ab35a45c9b"
+  },
+  "report_004_pneumonia__FOLLOW-UP__7": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Follow-up schedule, telephone review, and future clinic visit with repeat X-ray to confirm resolution.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "6e265805df93fa71"
+  },
+  "report_004_pneumonia__IMAGING__4": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Imaging results indicating right lower lobe consolidation on chest X-ray with no effusion or pneumothorax.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "9bbdc654f5ecc068"
+  },
+  "report_004_pneumonia__LABORATORY_RESULTS__3": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Laboratory findings showing elevated WBC, neutrophils, CRP, procalcitonin, and arterial blood gas results.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "f9cc386b2cb912a2"
+  },
+  "report_004_pneumonia__MEDICATIONS__5": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Prescribed outpatient antibiotic regimen, adjunctive therapy, and hydration instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "27f61b790affdaad"
+  },
+  "report_004_pneumonia__PATIENT_INFORMATION__0": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Patient identification, demographics, and referral details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "513a6301c6601998"
+  },
+  "report_004_pneumonia__TREATMENT_PLAN__6": {
+    "context": "Clinical report for patient SYN-2024-004, a 33-year-old female, detailing a diagnosis of community-acquired pneumonia in the right lower lobe. Treatment plan outlining follow-up criteria, completion of antibiotics, rest, and vaccination recommendations.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_004_pneumonia.pdf",
+    "text_hash": "db5517d89ce7f3eb"
+  },
+  "report_005_renal_failure__CHIEF_COMPLAINT__1": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Chief complaint of worsening renal function with creatinine trend and edema.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "060156d65bfc9d3d"
+  },
+  "report_005_renal_failure__DIAGNOSIS__2": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Primary diagnosis of Stage 4 CKD, causes, and related complications.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "0b03798b77973d89"
+  },
+  "report_005_renal_failure__FOLLOW-UP__7": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Scheduled follow-up appointments and disclaimer about synthetic data.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "618da401b15c5330"
+  },
+  "report_005_renal_failure__IMAGING__4": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Ultrasound imaging showing bilateral shrunken kidneys and chronic parenchymal changes.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "4e2146f2474e2cef"
+  },
+  "report_005_renal_failure__LABORATORY_RESULTS__3": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Laboratory findings highlighting renal function, electrolytes, anemia, and secondary hyperparathyroidism.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "3f71868a7efbc5ff"
+  },
+  "report_005_renal_failure__MEDICATIONS__5": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Current medication regimen and discontinued drugs for CKD management.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "0c197c0a68d1774a"
+  },
+  "report_005_renal_failure__PATIENT_INFORMATION__0": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Patient demographics, identifiers, and referral details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "45a4fd47d5f45bff"
+  },
+  "report_005_renal_failure__TREATMENT_PLAN__6": {
+    "context": "Nephrology evaluation report for patient SYN-2024-005, a 76-year-old male with Stage 4 chronic kidney disease. Planned renal replacement therapies and anemia targets with follow-up instructions.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_005_renal_failure.pdf",
+    "text_hash": "ff3116ad0d4618c7"
+  },
+  "report_006_stroke__CHIEF_COMPLAINT__1": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Initial presentation of right-sided facial droop, arm weakness, dysphasia, and NIHSS score.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "b5035339dd64b8f5"
+  },
+  "report_006_stroke__DIAGNOSIS__2": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Stroke diagnosis, cardioembolic etiology, tPA administration details, and post-treatment NIHSS improvement.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "497c2ca67e26f552"
+  },
+  "report_006_stroke__FOLLOW-UP__7": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Follow-up appointments, referrals, and patient education details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "37e9b353f8d963f1"
+  },
+  "report_006_stroke__IMAGING__4": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Imaging findings: CT, MRI, and CTA confirming infarct location and vessel status.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "68ede8bf338c81bd"
+  },
+  "report_006_stroke__LABORATORY_RESULTS__3": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Laboratory results including coagulation, metabolic, and cardiac markers.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "a59d572da2972529"
+  },
+  "report_006_stroke__MEDICATIONS__5": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Discharge medication list with anticoagulation, statin, ACE inhibitor, aspirin, and future aspirin discontinuation plan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "a06452def15510be"
+  },
+  "report_006_stroke__PATIENT_INFORMATION__0": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Patient demographics, admission and discharge dates, and attending neurologist.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "5aa10b6bf87f4802"
+  },
+  "report_006_stroke__TREATMENT_PLAN__6": {
+    "context": "Clinical discharge summary for patient SYN-2024-006, a 63-year-old female with acute left MCA ischemic stroke treated with tPA. Rehabilitation plan, AF rate control, echocardiogram scheduling, and driving restriction.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_006_stroke.pdf",
+    "text_hash": "2dacc586f42e5371"
+  },
+  "report_007_depression_anxiety__CHIEF_COMPLAINT__1": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Chief complaint of persistent low mood, anhedonia, anxiety, and passive suicidal ideation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "a36f31d2b011c7d4"
+  },
+  "report_007_depression_anxiety__DIAGNOSIS__2": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Formal diagnoses, symptom severity scores, and low suicide risk assessment.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "b7e13e9fe91e3c35"
+  },
+  "report_007_depression_anxiety__FOLLOW-UP__7": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Follow-up schedule, emergency instructions, and safety plan details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "c1ea4494bc692b39"
+  },
+  "report_007_depression_anxiety__IMAGING__4": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Imaging recommendation: no current MRI, with future consideration if refractory.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "a42883dfa1430604"
+  },
+  "report_007_depression_anxiety__LABORATORY_RESULTS__3": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Laboratory screening results, noting vitamin D deficiency and normal thyroid function.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "32baf86d0577d15d"
+  },
+  "report_007_depression_anxiety__MEDICATIONS__5": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Initial medication plan: sertraline titration and vitamin D supplementation, with benzodiazepine avoidance.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "ea495c19531d9ebe"
+  },
+  "report_007_depression_anxiety__PATIENT_INFORMATION__0": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Patient demographics, referral source, and report date.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "1acc479d965cc3be"
+  },
+  "report_007_depression_anxiety__TREATMENT_PLAN__6": {
+    "context": "Clinical psychiatry report for patient SYN-2024-007, a 28-year-old female with moderate Major Depressive Disorder and Generalised Anxiety Disorder. Comprehensive treatment plan including CBT referral, medication titration, safety planning, sick leave, and lifestyle advice.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_007_depression_anxiety.pdf",
+    "text_hash": "9226c6d97b795607"
+  },
+  "report_008_fracture_ortho__CHIEF_COMPLAINT__1": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Chief complaint describing fall and right hip pain.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "9a31275b536d81ef"
+  },
+  "report_008_fracture_ortho__DIAGNOSIS__2": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Diagnosis of Garden IV femoral neck fracture and relevant comorbidities.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "d7e7969760c3d226"
+  },
+  "report_008_fracture_ortho__FOLLOW-UP__7": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Scheduled follow-up appointments and care coordination details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "81def61998de42ba"
+  },
+  "report_008_fracture_ortho__IMAGING__4": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Radiographic findings pre- and post-operatively for the right hip.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "228dc11342508b84"
+  },
+  "report_008_fracture_ortho__LABORATORY_RESULTS__3": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Pre-operative laboratory values and cardiac clearance information.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "bf45b88d99e5ae2e"
+  },
+  "report_008_fracture_ortho__MEDICATIONS__5": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Post-operative medication regimen including anticoagulation, analgesia, and bone health supplements.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "ddc4d0db6509a6f6"
+  },
+  "report_008_fracture_ortho__PATIENT_INFORMATION__0": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Patient demographics, admission and surgical details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "1634350d9c42f6f9"
+  },
+  "report_008_fracture_ortho__TREATMENT_PLAN__6": {
+    "context": "Orthopaedic surgical report for patient SYN-2024-008, an 82-year-old female with a displaced intracapsular right femoral neck fracture treated by total hip replacement. Immediate post-operative treatment plan and rehabilitation strategy.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_008_fracture_ortho.pdf",
+    "text_hash": "00e9b723099a982e"
+  },
+  "report_009_sepsis__CHIEF_COMPLAINT__1": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Chief complaint and vital signs indicating deteriorating status and known intra-abdominal abscess.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "0d1b5d7a49fe36cd"
+  },
+  "report_009_sepsis__DIAGNOSIS__2": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Primary diagnosis of septic shock, SOFA score, suspected organisms, and source control plan.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "7f6a69cfee2151e5"
+  },
+  "report_009_sepsis__FOLLOW-UP__7": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Follow-up schedule, family meeting, expected ICU stay, and disclaimer statement.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "4ec3c756c3e9d3ca"
+  },
+  "report_009_sepsis__IMAGING__4": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. CT imaging findings of a multiloculated right iliac fossa abscess and ileus.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "a77bebf2ed91d6b8"
+  },
+  "report_009_sepsis__LABORATORY_RESULTS__3": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Critical laboratory values, organ dysfunction indicators, and pending blood cultures.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "3244048fd9c11950"
+  },
+  "report_009_sepsis__MEDICATIONS__5": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Initial antimicrobial therapy, vasopressor, fluid resuscitation, steroids, and VTE prophylaxis details.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "abc9026ec2520031"
+  },
+  "report_009_sepsis__PATIENT_INFORMATION__0": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Patient demographics, ICU admission details, and admitting intensivist.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "004810bb09a195dd"
+  },
+  "report_009_sepsis__TREATMENT_PLAN__6": {
+    "context": "ICU sepsis admission report for patient SYN-2024-009 with septic shock from intra-abdominal abscess. Comprehensive treatment plan including source control, ventilation, renal support, monitoring, and nutrition.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_009_sepsis.pdf",
+    "text_hash": "b3ac0bd5e9fcf6a4"
+  },
+  "report_010_thyroid_cancer__CHIEF_COMPLAINT__1": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Reason for surgery: elective removal of a 1.8 cm papillary thyroid carcinoma discovered incidentally.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "89734b9b494b9097"
+  },
+  "report_010_thyroid_cancer__DIAGNOSIS__2": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Pathology findings: classical PTC, pT2 N0 M0, clear margins, no lymph node involvement.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "85d16a412745d6a0"
+  },
+  "report_010_thyroid_cancer__FOLLOW-UP__7": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Scheduled follow-up appointments with surgery, nuclear medicine, and endocrinology teams and a disclaimer about data authenticity.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "1140d38a613c6391"
+  },
+  "report_010_thyroid_cancer__IMAGING__4": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Imaging studies: pre-op ultrasound confirming the nodule and plans for post-op imaging and radioiodine ablation.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "8146804fbb239f11"
+  },
+  "report_010_thyroid_cancer__LABORATORY_RESULTS__3": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Post-operative lab results showing hypocalcaemia, low PTH, and pre-op thyroid function values.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "362b9387e79dfa0f"
+  },
+  "report_010_thyroid_cancer__MEDICATIONS__5": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Post-operative medication regimen including levothyroxine, calcium, calcitriol, and pain control.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "d128672718779452"
+  },
+  "report_010_thyroid_cancer__PATIENT_INFORMATION__0": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Patient demographics, surgery and report dates, and surgeon information.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "d36a5e2bbc8ecd0d"
+  },
+  "report_010_thyroid_cancer__TREATMENT_PLAN__6": {
+    "context": "Surgical report for patient SYN-2024-010, a 41-year-old female undergoing elective total thyroidectomy for papillary thyroid carcinoma. Long-term treatment plan covering levothyroxine suppression, radioiodine, thyroglobulin monitoring, calcium supplementation, and surveillance.",
+    "model": "openai/gpt-oss-20b",
+    "source_file": "report_010_thyroid_cancer.pdf",
+    "text_hash": "e9861c5ea8b97f58"
+  }
+}
