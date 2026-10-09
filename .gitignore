@@ -4,7 +4,8 @@
 __pycache__/
 *.pyc
 .env
-data/raw/*.pdf
+# The 37 bundled PDFs are tracked through Git LFS (see .gitattributes) so the
+# Docker build on Hugging Face Spaces has them.
 data/processed/
 data/vectorstore/
 data/eval/
@@ -22,3 +23,11 @@ data/ocr_test_printed/
 models/
 # HuggingFace model cache (downloaded automatically, not committed)
 .cache/
+data/vectorstore_exp/
+
+# Personal study guide, not for the public repo
+PROJECT_GUIDE.md
+
+# Local dev tools (LangGraph Studio server state and its own venv)
+.langgraph_api/
+.venv-studio/
