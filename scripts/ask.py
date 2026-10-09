@@ -11,10 +11,10 @@ you build the frontend on top of it.
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
 from src.pipeline import ask
-
 
 DEMO_QUESTIONS = [
     "What was the WBC count in the lymphoma patient?",

@@ -17,9 +17,10 @@ PhD angle: this mirrors the multi-modal ingestion pipeline described in MedRAG a
 BioRAG papers — they face the exact same text vs. scan dichotomy.
 """
 
-import fitz  # PyMuPDF
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
+
+import fitz  # PyMuPDF
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp"}
 
