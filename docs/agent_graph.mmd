@@ -1,0 +1,28 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	route(route)
+	simple(simple)
+	agent(agent)
+	tools(tools)
+	answer(answer)
+	ground(ground)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> route;
+	agent -.-> answer;
+	agent -.-> tools;
+	answer --> ground;
+	ground -.-> __end__;
+	ground -.-> answer;
+	route -.-> agent;
+	route -.-> simple;
+	tools -.-> agent;
+	tools -.-> answer;
+	simple --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

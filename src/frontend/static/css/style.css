@@ -132,6 +132,30 @@ button { font-family:inherit; cursor:pointer }
 }
 .src-ref:hover .src-tip { display:block }
 
+/* Agent steps, collapsed under the answer */
+.steps { padding:8px 15px; border-top:1px solid var(--bd); font-size:11px; color:var(--tx2) }
+.steps summary { cursor:pointer; font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--tx3) }
+.steps summary:hover { color:var(--accent) }
+.steps ol { margin:7px 0 2px 18px; display:flex; flex-direction:column; gap:4px }
+.step-sum { font-size:10px; color:var(--tx3); font-family:'Consolas','Courier New',monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+
+/* Live agent graph, between the card header and the answer */
+.glive { padding:6px 15px 8px; border-bottom:1px solid var(--bd) }
+.glive summary { cursor:pointer; font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--tx3) }
+.glive summary:hover { color:var(--accent) }
+.glive-now { margin-left:6px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--accent) }
+.glive svg { display:block; width:100%; max-width:460px; height:auto; margin-top:6px }
+.gn rect, .gn circle { fill:var(--surface); stroke:var(--bd2); stroke-width:1; transition:fill .15s,stroke .15s }
+.gn text { fill:var(--tx3); font-size:10px; text-anchor:middle; dominant-baseline:central }
+.gn.seen rect, .gn.seen circle { stroke:var(--accent); stroke-width:1.5 }
+.gn.seen text { fill:var(--tx2) }
+.gn.on rect { fill:var(--accent); stroke:var(--accent) }
+.gn.on text { fill:var(--surface); font-weight:600 }
+.ge { fill:none; stroke:var(--bd2); stroke-width:1 }
+.ge.seen { stroke:var(--accent) }
+.gm { fill:var(--bd2) }
+.gm-on { fill:var(--accent) }
+
 /* ── MODAL ───────────────────────────────────────────────────────── */
 .modal-ov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:500; align-items:center; justify-content:center }
 .modal-ov.open { display:flex }
@@ -161,3 +185,6 @@ textarea::placeholder { color:var(--tx3) }
 .send-btn:disabled { opacity:.45; cursor:not-allowed }
 .input-foot { display:flex; justify-content:space-between; margin-top:6px }
 .hint { font-size:10.5px; color:var(--tx3) }
+.foot-l { display:flex; align-items:center; gap:14px }
+.mode-tgl { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--tx2); cursor:pointer; user-select:none }
+.mode-tgl input { accent-color:var(--accent); margin:0; cursor:pointer }

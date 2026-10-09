@@ -30,7 +30,7 @@
   <main class="main">
     <header class="hdr">
       <div class="hdr-l">
-        <span class="live"><span class="dot"></span>Llama 3.3 70B via Groq</span>
+        <span class="live"><span class="dot"></span>gpt-oss-120b via Groq</span>
         <span class="hdr-stat" id="hdr-stat"><b>0</b> chunks indexed</span>
       </div>
       <div class="hdr-r">
@@ -60,7 +60,12 @@
         <button class="send-btn" id="send-btn">Ask</button>
       </div>
       <div class="input-foot">
-        <span class="hint">Enter to send · Shift+Enter for newline</span>
+        <span class="foot-l">
+          <label class="mode-tgl" title="Plans several searches. Use for comparisons and questions across patients.">
+            <input type="checkbox" id="agent-tgl"> Agent mode
+          </label>
+          <span class="hint">Enter to send · Shift+Enter for newline</span>
+        </span>
         <span class="hint" id="foot-stat"></span>
       </div>
     </div>

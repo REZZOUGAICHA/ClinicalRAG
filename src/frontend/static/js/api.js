@@ -20,11 +20,12 @@ export async function uploadFile(file) {
 }
 
 // Streams /ask as an async generator of parsed SSE events ({type, ...}).
-export async function* askStream(query, topK = 3) {
+// mode is "pipeline" or "agent"; agent mode adds "step" and "trace" events.
+export async function* askStream(query, topK = 3, mode = 'pipeline') {
   const res = await fetch('/ask', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, top_k: topK }),
+    body: JSON.stringify({ query, top_k: topK, mode }),
   });
 
   if (!res.ok) throw new Error(String(res.status));

@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "clinicalrag_agent": "./src/agent/studio.py:graph"
+  },
+  "env": ".env"
+}
