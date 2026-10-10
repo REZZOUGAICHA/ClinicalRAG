@@ -1,4 +1,4 @@
-import { fetchHealth, fetchDocuments, uploadFile, askStream } from './api.js';
+import { fetchHealth, fetchDocuments, uploadFile, askStream, documentUrl } from './api.js';
 import { renderHighlightedPage } from './pdfViewer.js';
 
 let busy = false;
@@ -30,7 +30,7 @@ function bindEvents() {
 
   el('doc-list').addEventListener('click', (e) => {
     const item = e.target.closest('.doc-item');
-    if (item) window.open(`/documents/${encodeURIComponent(item.dataset.file)}`, '_blank');
+    if (item) window.open(documentUrl(item.dataset.file), '_blank');
   });
 
   el('modal').addEventListener('click', closeModal);
@@ -39,8 +39,13 @@ function bindEvents() {
 
 // ── Documents ──────────────────────────────────────────────────────
 async function loadDocs() {
+  // The hosted API scales to zero; a cold start takes ~30 s of loading models.
+  const waking = setTimeout(() => {
+    el('hdr-stat').textContent = 'Waking up the server (up to ~30 s on first visit)…';
+  }, 3000);
   try {
     const [docs, health] = await Promise.all([fetchDocuments(), fetchHealth()]);
+    clearTimeout(waking);
 
     el('doc-list').innerHTML = docs.documents.length
       ? docs.documents.map(f => `<button class="doc-item" title="${x(f)}" data-file="${x(f)}">${x(f)}</button>`).join('')
@@ -50,6 +55,8 @@ async function loadDocs() {
     el('foot-stat').textContent =
       `${docs.total} document${docs.total !== 1 ? 's' : ''} loaded`;
   } catch {
+    clearTimeout(waking);
+    el('hdr-stat').textContent = '';
     el('doc-list').innerHTML = '<div class="doc-empty">Cannot reach server</div>';
   }
 }
@@ -270,7 +277,7 @@ function openModal(src) {
   el('m-src').textContent = `${src.source_file} — page ${src.page_number}`;
   el('modal').classList.add('open');
 
-  const pdfUrl = `/documents/${encodeURIComponent(src.source_file)}`;
+  const pdfUrl = documentUrl(src.source_file);
   renderHighlightedPage(el('m-body'), pdfUrl, src.page_number, src.text || '')
     .catch((e) => {
       el('m-body').innerHTML = `<div class="pdf-status" style="color:var(--hi)">Could not render PDF: ${x(String(e))}</div>`;

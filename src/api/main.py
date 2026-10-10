@@ -106,14 +106,19 @@ app = FastAPI(
 )
 
 # ---------------------------------------------------------------------------
-# CORS — allow the frontend (different port) to call this API
+# CORS — the deployed frontend (Netlify) calls this API on another domain
 # ---------------------------------------------------------------------------
+
+# Comma-separated, e.g. "https://clinicalrag.netlify.app". Locally the frontend
+# is served by this same app, so the "*" default never matters there. No
+# cookies are used, so credentials stay off ("*" with credentials is invalid).
+CORS_ORIGINS = [o.strip() for o in os.getenv("CLINICALRAG_CORS_ORIGINS", "*").split(",") if o.strip()]
+MAX_UPLOAD_MB = float(os.getenv("CLINICALRAG_MAX_UPLOAD_MB", "10"))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten this to your frontend URL in production
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -292,6 +297,10 @@ async def upload_pdf(file: UploadFile = File(...)):
     filename = Path(file.filename or "").name
     if not filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+    # On a public deployment a huge scanned PDF would run OCR for minutes on
+    # someone else's compute budget.
+    if file.size is not None and file.size > MAX_UPLOAD_MB * 1024 * 1024:
+        raise HTTPException(status_code=413, detail=f"PDFs up to {MAX_UPLOAD_MB:g} MB only.")
     return await run_in_threadpool(_ingest_upload, filename, file.file)
 
 
