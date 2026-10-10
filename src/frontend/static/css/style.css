@@ -70,7 +70,7 @@ button { font-family:inherit; cursor:pointer }
 .hdr-stat { font-size:11px; color:var(--tx3) }
 .hdr-stat b { color:var(--tx2); font-weight:600; font-variant-numeric:tabular-nums }
 .hdr-r { display:flex; gap:6px }
-.icon-btn { width:28px; height:28px; border:1px solid var(--bd); background:transparent; color:var(--tx2); font-size:13px; display:flex; align-items:center; justify-content:center; transition:all .12s }
+.icon-btn { width:28px; height:28px; border:1px solid var(--bd); background:transparent; color:var(--tx2); font-size:13px; display:flex; align-items:center; justify-content:center; text-decoration:none; transition:all .12s }
 .icon-btn:hover { border-color:var(--accent); color:var(--accent) }
 
 /* ── CHAT ────────────────────────────────────────────────────────── */
