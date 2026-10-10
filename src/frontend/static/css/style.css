@@ -186,5 +186,3 @@ textarea::placeholder { color:var(--tx3) }
 .input-foot { display:flex; justify-content:space-between; margin-top:6px }
 .hint { font-size:10.5px; color:var(--tx3) }
 .foot-l { display:flex; align-items:center; gap:14px }
-.mode-tgl { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--tx2); cursor:pointer; user-select:none }
-.mode-tgl input { accent-color:var(--accent); margin:0; cursor:pointer }

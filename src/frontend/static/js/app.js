@@ -3,9 +3,12 @@ import { renderHighlightedPage } from './pdfViewer.js';
 
 let busy = false;
 
+// Visitors just get answers; the router picks pipeline or agent on the server.
+// Add ?debug=1 to the URL to see which path ran, the live graph and the steps.
+const DEBUG = new URLSearchParams(location.search).has('debug');
+
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(localStorage.getItem('theme') || 'light');
-  el('agent-tgl').checked = localStorage.getItem('mode') === 'agent';
   bindEvents();
   loadDocs();
   el('qi').focus();
@@ -16,9 +19,6 @@ function bindEvents() {
   el('file-in').addEventListener('change', (e) => upload(e.target.files[0]));
 
   el('theme-btn').addEventListener('click', toggleTheme);
-  el('agent-tgl').addEventListener('change', (e) => {
-    localStorage.setItem('mode', e.target.checked ? 'agent' : 'pipeline');
-  });
 
   el('qi').addEventListener('keydown', onKey);
   el('qi').addEventListener('input', () => grow(el('qi')));
@@ -76,16 +76,15 @@ async function send() {
 
   addHtml('chat', `<div class="msg msg-u"><div class="bubble-u">${x(q)}</div></div>`);
 
-  const mode = el('agent-tgl').checked ? 'agent' : 'pipeline';
   const id = 'r' + Date.now();
   addHtml('chat', `
     <div class="msg" id="${id}">
       <div class="answer-card">
         <div class="answer-top">
-          <span class="answer-lbl">ClinicalRAG${mode === 'agent' ? ' · Agent' : ''}</span>
+          <span class="answer-lbl" id="${id}-l">ClinicalRAG</span>
           <span class="answer-time" id="${id}-t">retrieving...</span>
         </div>
-        ${mode === 'agent' ? graphHtml(id) : ''}
+        ${DEBUG ? graphHtml(id) : ''}
         <div class="answer-body" id="${id}-b"></div>
       </div>
     </div>`);
@@ -100,7 +99,7 @@ async function send() {
   let finished = false;
 
   try {
-    for await (const ev of askStream(q, 3, mode)) {
+    for await (const ev of askStream(q, 3, 'auto')) {
       if (ev.type === 'token') {
         text += ev.content;
         el(id + '-b').innerHTML = fmt(stripSrc(text)) + '<span class="cursor"></span>';
@@ -113,8 +112,13 @@ async function send() {
         graphEnter(id, ev.node);
 
       } else if (ev.type === 'step') {
-        // Show the agent's current step where "retrieving..." normally sits
-        el(id + '-t').textContent = ev.content;
+        if (DEBUG) {
+          // Current step where "retrieving..." normally sits, and the path taken.
+          el(id + '-t').textContent = ev.content;
+          if (ev.route) el(id + '-l').textContent = `ClinicalRAG · ${ev.route === 'simple' ? 'pipeline' : 'agent'}`;
+        } else if (ev.route === 'complex') {
+          el(id + '-t').textContent = 'checking several reports...';
+        }
         scrollEnd();
 
       } else if (ev.type === 'trace') {
@@ -130,7 +134,7 @@ async function send() {
         el(id + '-t').textContent = `${secs}s`;
         el(id + '-b').innerHTML = error ? errorHtml(error) : fmt(stripSrc(text));
         if (srcs.length && !error) renderSources(id, srcs);
-        if (trace && trace.trace.length) renderSteps(id, trace.trace);
+        if (DEBUG && trace && trace.trace.length) renderSteps(id, trace.trace);
         graphDone(id, !error);
       }
     }

@@ -43,3 +43,32 @@ def test_pipeline_stream_ends_with_error_and_done_when_groq_fails(monkeypatch):
     assert [e["type"] for e in events] == ["token", "error", "done"]
     assert "RateLimitError" in events[1]["message"]
     assert "org_123" not in r.text
+
+
+def test_auto_mode_streams_simple_questions_through_the_pipeline(monkeypatch):
+    monkeypatch.setattr(main, "classify_question", lambda q: "simple")
+    monkeypatch.setattr(main, "rewrite_query", lambda q: q)
+    monkeypatch.setattr(main, "retrieve", lambda q, k: [])
+    monkeypatch.setattr(main, "stream_answer", lambda q, c: iter([
+        'data: {"type": "token", "content": "9.2%"}\n\n', 'data: {"type": "done"}\n\n']))
+    monkeypatch.setattr(main, "stream_agent", lambda *a, **k: (_ for _ in ()).throw(AssertionError("agent ran")))
+
+    events = _events(TestClient(main.app).post("/ask", json={"query": "HbA1c?", "mode": "auto"}).text)
+    assert [e["type"] for e in events] == ["step", "token", "done"]
+    assert events[0]["route"] == "simple"
+
+
+def test_auto_mode_hands_complex_questions_to_the_agent_without_rerouting(monkeypatch):
+    seen = {}
+
+    def fake_agent(query, route=None):
+        seen["route"] = route
+        yield {"type": "result", "result": {"answer": "two patients", "sources": [],
+                                            "route": "complex", "trace": []}}
+
+    monkeypatch.setattr(main, "classify_question", lambda q: "complex")
+    monkeypatch.setattr(main, "stream_agent", fake_agent)
+
+    events = _events(TestClient(main.app).post("/ask", json={"query": "which patients?", "mode": "auto"}).text)
+    assert seen["route"] == "complex"
+    assert [e["type"] for e in events] == ["token", "sources", "trace", "done"]
