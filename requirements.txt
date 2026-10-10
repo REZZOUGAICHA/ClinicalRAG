@@ -11,8 +11,13 @@ python-dotenv==1.0.1          # load .env files
 # Embeddings + Vector DB + Retrieval + LLM generation
 sentence-transformers==3.3.1  # loads bge-small-en for embeddings + cross-encoder reranker
 chromadb==0.6.3                # local vector database (dev)
-groq==0.37.1                   # Groq API — Llama 3.3 70B for generation + query rewriting
+groq==0.37.1                   # Groq API — gpt-oss-120b for generation + query rewriting
 rank-bm25==0.2.2                # BM25 keyword search for hybrid retrieval (RRF fusion)
+
+# Agent mode (src/agent): LangGraph state machine over the same retrieval
+langgraph==1.2.9
+langchain-core==1.5.1
+langchain-groq==1.1.3          # ChatGroq with tool calling; passes reasoning_effort through
 
 # Backend
 fastapi==0.115.6               # backend API

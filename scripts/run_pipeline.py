@@ -6,15 +6,14 @@ This is your manual verification step — the "spend real time here before
 touching the LLM layer" advice made concrete and runnable.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
-from src.ocr.extractor import extract
 from src.chunking.chunker import chunk_document
-
+from src.ocr.extractor import extract
 
 DATA_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")

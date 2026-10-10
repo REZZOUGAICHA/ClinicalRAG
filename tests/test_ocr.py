@@ -8,10 +8,11 @@ What a PhD committee asks: "How did you validate the preprocessing step?"
 Answer: same — documented, reproducible verification with known ground truth.
 """
 
-import pytest
 from pathlib import Path
-from src.ocr.extractor import extract, is_likely_scanned, ExtractedDocument
 
+import pytest
+
+from src.ocr.extractor import ExtractedDocument, extract, is_likely_scanned
 
 SAMPLE_PDF = Path("data/raw/report_001_lymphoma_staging.pdf")
 

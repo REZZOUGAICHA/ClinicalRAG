@@ -24,7 +24,6 @@ from pathlib import Path
 
 from src.ocr.extractor import ExtractedDocument
 
-
 # Section headers we expect in our clinical reports.
 # This list is the "schema" we impose on the document.
 # In production you'd learn this from a larger corpus or use an NLP classifier.

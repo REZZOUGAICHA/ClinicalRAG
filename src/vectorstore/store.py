@@ -30,11 +30,14 @@ to 1 (identical meaning). In practice, good matches are above 0.7.
 
 import json
 from pathlib import Path
+
 import chromadb
 from chromadb.config import Settings
 
+from src.config import settings
+
 COLLECTION_NAME = "clinical_chunks"
-VECTORSTORE_DIR = Path("data/vectorstore")
+VECTORSTORE_DIR = settings.vectorstore_dir
 
 _collection: chromadb.Collection | None = None
 
@@ -58,16 +61,44 @@ def get_collection() -> chromadb.Collection:
     """
     global _collection
     if _collection is None:
-        VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)
-        client = chromadb.PersistentClient(
-            path=str(VECTORSTORE_DIR),
-            settings=Settings(anonymized_telemetry=False),
-        )
-        _collection = client.get_or_create_collection(
+        _collection = _client().get_or_create_collection(
             name=COLLECTION_NAME,
-            metadata={"hnsw:space": "cosine"},
+            metadata=_collection_metadata(),
         )
+        _check_built_with(_collection)
     return _collection
+
+
+def _client() -> chromadb.ClientAPI:
+    VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)
+    return chromadb.PersistentClient(
+        path=str(VECTORSTORE_DIR),
+        settings=Settings(anonymized_telemetry=False),
+    )
+
+
+def _collection_metadata() -> dict:
+    # MedCPT was trained with dot-product scores on unnormalised vectors.
+    # Recording how the index was built lets get_collection() refuse a query
+    # setup that doesn't match it.
+    return {
+        "hnsw:space": "ip" if settings.embedder == "medcpt" else "cosine",
+        "embedder": settings.embedder,
+        "contextual": settings.contextual,
+    }
+
+
+def _check_built_with(collection: chromadb.Collection) -> None:
+    # Indexes built before this metadata existed are plain bge-small-en.
+    meta = collection.metadata or {}
+    built = (meta.get("embedder", "bge-small-en"), bool(meta.get("contextual", False)))
+    wanted = (settings.embedder, settings.contextual)
+    if built != wanted:
+        raise RuntimeError(
+            f"{VECTORSTORE_DIR} was built with embedder={built[0]}, contextual={built[1]}, "
+            f"but the current settings are embedder={wanted[0]}, contextual={wanted[1]}. "
+            "Rebuild it with scripts/ingest.py or point RAG_VECTORSTORE_DIR at a matching index."
+        )
 
 
 def ingest_chunks(chunks_json_path: Path) -> int:
@@ -93,21 +124,40 @@ def ingest_chunks(chunks_json_path: Path) -> int:
     report_001_lymphoma_staging.pdf, section LABORATORY RESULTS" for free.
     """
     from src.embeddings.embedder import embed_texts
+    from src.retrieval.contextual import cached_context, indexed_text, load_contexts
 
     with open(chunks_json_path, encoding="utf-8") as f:
         chunks = json.load(f)
 
-    collection = get_collection()
-
-    # Check if already ingested — avoid duplicates on re-run
-    existing_count = collection.count()
-    if existing_count > 0:
-        print(f"  Collection already has {existing_count} items. Clearing and re-ingesting...")
-        collection.delete(where={"source_file": {"$ne": ""}})  # delete all
+    # Drop and recreate rather than clearing the rows, so the collection's
+    # metadata (embedder, contextual) always describes what's in it.
+    global _collection
+    client = _client()
+    if COLLECTION_NAME in [c if isinstance(c, str) else c.name for c in client.list_collections()]:
+        print("  Collection already exists. Clearing and re-ingesting...")
+        client.delete_collection(COLLECTION_NAME)
+    collection = client.create_collection(name=COLLECTION_NAME, metadata=_collection_metadata())
+    _collection = collection
 
     texts = [c["text"] for c in chunks]
+    # With contextual retrieval on, the vector is built from context + text,
+    # but the stored document stays the original text: that's what search()
+    # returns, and what the user and the answer LLM should see.
+    to_embed = texts
+    if settings.contextual:
+        contexts = load_contexts()
+        found = [cached_context(c, contexts) for c in chunks]
+        applied = sum(ctx is not None for ctx in found)
+        stale = sum(ctx is None and c["chunk_id"] in contexts for c, ctx in zip(chunks, found))
+        missing = len(chunks) - applied - stale
+        # Stale means the chunk text changed since its context was written
+        # (e.g. extraction differs between machines); visible in build logs.
+        print(f"  Contexts ({settings.contexts_path}): {applied} applied, {stale} stale, {missing} missing")
+        if stale or missing:
+            print("  WARNING: those chunks are indexed without context; run scripts/build_contexts.py")
+        to_embed = [indexed_text(t, ctx) for t, ctx in zip(texts, found)]
     print(f"  Embedding {len(texts)} chunks...")
-    embeddings = embed_texts(texts)
+    embeddings = embed_texts(to_embed, titles=[c["section"] for c in chunks])
 
     collection.add(
         ids=[c["chunk_id"] for c in chunks],

@@ -16,7 +16,8 @@ WHAT THIS FILE DOES:
 ENDPOINTS:
   GET  /health      → server status + how many chunks are indexed
   GET  /documents   → list of ingested document filenames
-  POST /ask         → streaming Q&A (returns SSE stream)
+  POST /ask         → streaming Q&A (returns SSE stream); "mode": "agent" uses
+                      the LangGraph agent in src/agent instead of the pipeline
   POST /upload      → upload a PDF and ingest it into the pipeline
 
 HOW TO RUN:
@@ -26,9 +27,14 @@ Then open http://localhost:8000/docs to see and test all endpoints.
 """
 
 import json
+import logging
+import os
 import shutil
+import tempfile
+import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
@@ -37,15 +43,25 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from src.agent import stream_agent
+from src.agent.llm import agent_model
 from src.chunking.chunker import chunk_document
+from src.embeddings.embedder import MODEL_NAME as EMBEDDING_MODEL
 from src.embeddings.embedder import get_model
-from src.generation.generator import rewrite_query, stream_answer
+from src.generation.generator import GROQ_MODEL, rewrite_query, stream_answer
 from src.ocr.extractor import extract
-from src.retrieval.retriever import _get_bm25, get_reranker, reset_bm25, retrieve
+from src.retrieval.contextual import embed_for_index
+from src.retrieval.retriever import RERANKER_MODEL, _get_bm25, get_reranker, reset_bm25, retrieve
+from src.tracing import setup_tracing
 from src.vectorstore.store import get_collection
 
 RAW_DIR = Path("data/raw")
 CHUNKS_JSON = Path("data/processed/chunks.json")
+
+log = logging.getLogger("uvicorn.error")
+# One upload at a time: each one reads and rewrites chunks.json and the
+# contexts cache, and two interleaved would drop each other's chunks.
+_ingest_lock = threading.Lock()
 
 
 # ---------------------------------------------------------------------------
@@ -67,14 +83,16 @@ async def lifespan(app: FastAPI):
     the CLI pays model-loading cost on every run; the server pays it once.
     """
     print("Starting ClinicalRAG server...")
-    print("  Loading embedding model (bge-small-en)...")
+    setup_tracing()  # no-op unless CLINICALRAG_TRACING is set
+    print(f"  Loading embedding model ({EMBEDDING_MODEL})...")
     get_model()
-    print("  Loading reranker (ms-marco-MiniLM-L-6-v2)...")
+    print(f"  Loading reranker ({RERANKER_MODEL})...")
     get_reranker()
     print("  Opening ChromaDB collection...")
     get_collection()
     print("  Building BM25 index from chunks.json...")
     _get_bm25()
+    print(f"  Answer model: {GROQ_MODEL} (pipeline), {agent_model()} (agent)")
     print("All models loaded. Server ready.\n")
     yield
     # Nothing to clean up on shutdown
@@ -88,14 +106,19 @@ app = FastAPI(
 )
 
 # ---------------------------------------------------------------------------
-# CORS — allow the frontend (different port) to call this API
+# CORS — the deployed frontend (Netlify) calls this API on another domain
 # ---------------------------------------------------------------------------
+
+# Comma-separated, e.g. "https://clinicalrag.netlify.app". Locally the frontend
+# is served by this same app, so the "*" default never matters there. No
+# cookies are used, so credentials stay off ("*" with credentials is invalid).
+CORS_ORIGINS = [o.strip() for o in os.getenv("CLINICALRAG_CORS_ORIGINS", "*").split(",") if o.strip()]
+MAX_UPLOAD_MB = float(os.getenv("CLINICALRAG_MAX_UPLOAD_MB", "10"))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten this to your frontend URL in production
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -117,6 +140,7 @@ class QuestionRequest(BaseModel):
     """
     query: str
     top_k: int = 3
+    mode: Literal["pipeline", "agent"] = "pipeline"
 
 
 # ---------------------------------------------------------------------------
@@ -185,17 +209,9 @@ async def ask(req: QuestionRequest):
     if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
 
-    # Retrieval is sensitive to exact wording (typos can drop the right
-    # document out of the shortlist) — search on a typo-corrected version,
-    # but still generate the answer against the user's original message.
-    search_query = await run_in_threadpool(rewrite_query, req.query)
-
-    # retrieve() is CPU-bound (embedding + BM25 + reranker) — run in thread pool
-    # so we don't block FastAPI's async event loop
-    chunks = await run_in_threadpool(retrieve, search_query, req.top_k)
-
+    events = _agent_events(req.query) if req.mode == "agent" else _pipeline_events(req.query, req.top_k)
     return StreamingResponse(
-        stream_answer(req.query, chunks),
+        events,
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
@@ -204,18 +220,61 @@ async def ask(req: QuestionRequest):
     )
 
 
-def _embed_batch(texts: list[str]):
+def _sse(event: dict) -> str:
+    return f"data: {json.dumps(event)}\n\n"
+
+
+def _pipeline_events(query: str, top_k: int):
     """
-    Embed a list of texts without showing a progress bar.
-    Used for upload ingestion where the bar would clutter server logs.
+    A plain (sync) generator, like _agent_events: StreamingResponse runs it in
+    a worker thread, so the rewrite, retrieval and Groq calls don't block the
+    event loop. If any of them fails (a Groq 429 mid-stream, say), the client
+    still gets an error event and "done" instead of a stream that just stops.
     """
-    model = get_model()
-    return model.encode(
-        texts,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
+    try:
+        # Retrieval is sensitive to exact wording (typos can drop the right
+        # document out of the shortlist) — search on a typo-corrected version,
+        # but still generate the answer against the user's original message.
+        search_query = rewrite_query(query)
+        chunks = retrieve(search_query, top_k)
+        yield from stream_answer(query, chunks)
+    except Exception as e:
+        # Groq error strings carry the org ID; keep the detail in the server log.
+        log.exception("pipeline answer failed")
+        yield _sse({"type": "error", "message": f"Answer failed: {type(e).__name__}. Please try again."})
+        yield _sse({"type": "done"})
+
+
+def _agent_events(query: str):
+    """
+    Same event protocol as stream_answer, plus "step" events while the agent
+    works and a "node" event each time a graph node starts (for the live
+    graph in the UI). The answer arrives as a single token event rather than streamed:
+    the grounding check may rewrite or strip citations after generation, so
+    streaming the draft would show text that later changes.
+
+    A plain (sync) generator: StreamingResponse iterates it in a worker
+    thread, so the blocking LLM and retrieval calls don't stall the event loop.
+    """
+    try:
+        for ev in stream_agent(query):
+            if ev["type"] == "route":
+                label = ("Single lookup, using the standard pipeline" if ev["route"] == "simple"
+                         else "Multi-step question, planning lookups")
+                yield _sse({"type": "step", "content": label, "route": ev["route"],
+                            "node": ev["node"]})
+            elif ev["type"] in ("step", "node"):
+                yield _sse(ev)
+            elif ev["type"] == "result":
+                result = ev["result"]
+                yield _sse({"type": "token", "content": result["answer"]})
+                yield _sse({"type": "sources", "sources": result["sources"]})
+                yield _sse({"type": "trace", "route": result["route"], "trace": [
+                    {"step": t["step"], "summary": t["summary"]} for t in result["trace"]]})
+    except Exception as e:
+        log.exception("agent run failed")
+        yield _sse({"type": "error", "message": f"Agent failed: {type(e).__name__}. Please try again."})
+    yield _sse({"type": "done"})
 
 
 @app.post("/upload")
@@ -234,71 +293,82 @@ async def upload_pdf(file: UploadFile = File(...)):
     the new chunks. reset_bm25() clears the cache so _get_bm25() rebuilds it
     from the updated file on the next query.
     """
-    if not file.filename.lower().endswith(".pdf"):
+    # Only the base name: "../../x.pdf" must not escape data/raw/.
+    filename = Path(file.filename or "").name
+    if not filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+    # On a public deployment a huge scanned PDF would run OCR for minutes on
+    # someone else's compute budget.
+    if file.size is not None and file.size > MAX_UPLOAD_MB * 1024 * 1024:
+        raise HTTPException(status_code=413, detail=f"PDFs up to {MAX_UPLOAD_MB:g} MB only.")
+    return await run_in_threadpool(_ingest_upload, filename, file.file)
 
-    # Save the uploaded file to data/raw/
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-    dest = RAW_DIR / file.filename
-    with dest.open("wb") as f:
-        shutil.copyfileobj(file.file, f)
 
-    # Extract text (CPU-bound → thread pool)
-    doc = await run_in_threadpool(extract, dest)
-    chunks = chunk_document(doc)
+def _ingest_upload(filename: str, data) -> dict:
+    with _ingest_lock:
+        RAW_DIR.mkdir(parents=True, exist_ok=True)
+        dest = RAW_DIR / filename
+        with dest.open("wb") as f:
+            shutil.copyfileobj(data, f)
 
-    if not chunks:
-        dest.unlink(missing_ok=True)
-        raise HTTPException(
-            status_code=422,
-            detail="No text could be extracted from this PDF. Is it a scanned image?"
-        )
-
-    # Filter out chunks already in ChromaDB (handles re-upload of the same file)
-    col = get_collection()
-    existing_ids = set(col.get()["ids"])
-    new_chunks = [c for c in chunks if c.chunk_id not in existing_ids]
-
-    if new_chunks:
-        # Embed new chunks (CPU-bound → thread pool)
-        texts = [c.text for c in new_chunks]
-        embeddings = await run_in_threadpool(_embed_batch, texts)
-
-        col.add(
-            ids=[c.chunk_id for c in new_chunks],
-            embeddings=embeddings.tolist(),
-            documents=texts,
-            metadatas=[
-                {
-                    "source_file": c.source_file,
-                    "section": c.section,
-                    "page_number": c.page_number,
-                    "char_count": c.char_count,
-                }
-                for c in new_chunks
-            ],
-        )
-
-        # Append new chunks to chunks.json so BM25 knows about them
-        existing_json = (
-            json.loads(CHUNKS_JSON.read_text(encoding="utf-8"))
-            if CHUNKS_JSON.exists()
-            else []
-        )
-        existing_json_ids = {c["chunk_id"] for c in existing_json}
-        to_append = [
-            c.to_dict() for c in new_chunks if c.chunk_id not in existing_json_ids
-        ]
-        if to_append:
-            CHUNKS_JSON.parent.mkdir(parents=True, exist_ok=True)
-            CHUNKS_JSON.write_text(
-                json.dumps(existing_json + to_append, indent=2, ensure_ascii=False),
-                encoding="utf-8",
+        chunks = chunk_document(extract(dest))
+        if not chunks:
+            dest.unlink(missing_ok=True)
+            raise HTTPException(
+                status_code=422,
+                detail="No text could be extracted from this PDF. Is it a scanned image?"
             )
-            reset_bm25()
 
-    return {
-        "filename": file.filename,
-        "chunks_added": len(new_chunks),
-        "total_chunks_indexed": col.count(),
-    }
+        # Filter out chunks already in ChromaDB (handles re-upload of the same file)
+        col = get_collection()
+        existing_ids = set(col.get()["ids"])
+        new_chunks = [c for c in chunks if c.chunk_id not in existing_ids]
+
+        if new_chunks:
+            embeddings = embed_for_index(new_chunks)
+            col.add(
+                ids=[c.chunk_id for c in new_chunks],
+                embeddings=embeddings.tolist(),
+                documents=[c.text for c in new_chunks],
+                metadatas=[
+                    {
+                        "source_file": c.source_file,
+                        "section": c.section,
+                        "page_number": c.page_number,
+                        "char_count": c.char_count,
+                    }
+                    for c in new_chunks
+                ],
+            )
+
+            # Append new chunks to chunks.json so BM25 knows about them
+            existing_json = (
+                json.loads(CHUNKS_JSON.read_text(encoding="utf-8"))
+                if CHUNKS_JSON.exists()
+                else []
+            )
+            existing_json_ids = {c["chunk_id"] for c in existing_json}
+            to_append = [c.to_dict() for c in new_chunks if c.chunk_id not in existing_json_ids]
+            if to_append:
+                _write_json_atomic(CHUNKS_JSON, existing_json + to_append)
+                reset_bm25()
+
+        return {
+            "filename": filename,
+            "chunks_added": len(new_chunks),
+            "total_chunks_indexed": col.count(),
+        }
+
+
+def _write_json_atomic(path: Path, data) -> None:
+    # The agent's tools re-read chunks.json whenever it changes, so it must
+    # never be seen half-written.
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=path.name, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise

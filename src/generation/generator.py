@@ -23,14 +23,16 @@ This instruction does two things:
 1. Prevents hallucination by giving the model an "out" (it can say "not found")
 2. Forces citation — the model has to reference which passage it used
 
-LLM CHOICE — Groq (Llama 3.3 70B):
-Groq is an inference provider that runs Meta's open-source Llama models
-on custom hardware (LPUs — Language Processing Units). Key facts:
-- Free tier: 6,000 requests/day, no credit card, no regional restrictions
-- Model: llama-3.3-70b-versatile — Meta's 70 billion parameter model,
-  competitive with GPT-4o on most benchmarks
-- Very fast: Groq's LPUs are 10-100x faster than GPU inference
-- API is OpenAI-compatible — easy to swap in another provider later
+LLM CHOICE — Groq (gpt-oss-120b):
+Groq is an inference provider that serves open-weight models on custom
+hardware (LPUs — Language Processing Units). We use openai/gpt-oss-120b,
+OpenAI's open-weight model. Key facts:
+- Free tier, no credit card; the API is OpenAI-compatible, so swapping
+  provider or model later is a small change
+- It's a reasoning model: it produces hidden reasoning tokens before the
+  visible answer, and those count against the completion token cap. Every
+  call below sets reasoning_effort and a max_completion_tokens with
+  headroom for that (see the budget constants below).
 
 PHD ANGLE:
 This approach is directly analogous to the "faithfulness" evaluation metric
@@ -42,12 +44,27 @@ we're structurally maximising faithfulness before we even evaluate it.
 import json
 import os
 import re
-from groq import Groq
+
 from dotenv import load_dotenv
+from groq import Groq
 
 load_dotenv()
 
 GROQ_MODEL = "openai/gpt-oss-120b"
+
+# Completion caps include the hidden reasoning tokens, not just the answer.
+# With the old max_tokens=100 and default effort, rewrite_query spent 83-98
+# tokens reasoning and came back empty or cut mid-sentence. At "low" effort a
+# rewrite used ~40 tokens and an answer ~60-110, so these leave plenty of room.
+REWRITE_MAX_TOKENS = 256
+ANSWER_MAX_TOKENS = 1024
+ANSWER_REASONING_EFFORT = "low"  # answers are extraction from given passages
+
+# gpt-oss sometimes wraps citations in CJK lenticular brackets (U+3010/U+3011)
+# instead of [ ], e.g. "【Source: ... | ...】". Map them to ASCII so citation
+# parsing here and in the frontend sees one format. It's a per-character
+# mapping, so it's safe to apply to individual stream deltas.
+_BRACKETS = str.maketrans({"\u3010": "[", "\u3011": "]"})
 
 # Matches the citation format we instruct the model to use:
 # "[Source: filename.pdf | SECTION NAME]". The model tends to echo the
@@ -108,9 +125,16 @@ Rewritten query:"""
         model=GROQ_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.0,
-        max_tokens=100,
+        max_completion_tokens=REWRITE_MAX_TOKENS,
+        reasoning_effort="low",
+        include_reasoning=False,
     )
-    return response.choices[0].message.content.strip().strip('"')
+    choice = response.choices[0]
+    rewritten = (choice.message.content or "").strip().strip('"')
+    # An empty or truncated rewrite is worse than the user's own wording.
+    if not rewritten or choice.finish_reason == "length":
+        return query
+    return rewritten
 
 
 def _select_cited_sources(answer_text: str, chunks: list[dict]) -> list[dict]:
@@ -141,7 +165,7 @@ def _select_cited_sources(answer_text: str, chunks: list[dict]) -> list[dict]:
 
 def _build_prompt(query: str, chunks: list[dict]) -> str:
     """
-    Build the prompt that gets sent to Groq (Llama 3.3 70B).
+    Build the prompt that gets sent to Groq (gpt-oss-120b).
 
     PROMPT STRUCTURE — why each part is here:
 
@@ -187,6 +211,7 @@ IMPORTANT RULES (for clinical questions only):
 - Answer ONLY using the information in the numbered passages below.
 - Do not use any outside medical knowledge — only what is explicitly stated in the passages.
 - After your answer, cite which passage(s) you used in this format: [Source: filename | SECTION]
+  Use plain square brackets and the passage's filename, not its number.
 - If the answer to the question is not found in any passage, respond with:
   "The answer to this question is not found in the available clinical documents."
 - Never guess. Never invent lab values, medications, or diagnoses.
@@ -202,10 +227,10 @@ RESPONSE:"""
 
 def generate_answer(query: str, chunks: list[dict]) -> dict:
     """
-    Send the query + retrieved chunks to Gemini and return the answer.
+    Send the query + retrieved chunks to the LLM and return the answer.
 
     Returns a dict with:
-    - answer:  the full text response from Gemini
+    - answer:  the full text response from the LLM
     - sources: list of (source_file, section) pairs used (from chunk metadata)
     - model:   which model produced the answer (useful for reproducibility)
 
@@ -222,10 +247,12 @@ def generate_answer(query: str, chunks: list[dict]) -> dict:
         model=GROQ_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1,   # low temperature = less creativity, more factual
-        max_tokens=512,
+        max_completion_tokens=ANSWER_MAX_TOKENS,
+        reasoning_effort=ANSWER_REASONING_EFFORT,
+        include_reasoning=False,
     )
 
-    answer_text = response.choices[0].message.content.strip()
+    answer_text = (response.choices[0].message.content or "").translate(_BRACKETS).strip()
     cited_chunks = _select_cited_sources(answer_text, chunks)
 
     return {
@@ -277,14 +304,21 @@ def stream_answer(query: str, chunks: list[dict]):
         model=GROQ_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1,
-        max_tokens=512,
+        max_completion_tokens=ANSWER_MAX_TOKENS,
+        reasoning_effort=ANSWER_REASONING_EFFORT,
+        # Reasoning arrives on delta.reasoning, not delta.content, so it never
+        # reached the client anyway; this just stops Groq sending it at all.
+        include_reasoning=False,
         stream=True,
     )
 
     full_answer = ""
     for event in groq_stream:
+        if not event.choices:
+            continue
         token = event.choices[0].delta.content
         if token:
+            token = token.translate(_BRACKETS)
             full_answer += token
             yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
 

@@ -1,0 +1,589 @@
+[
+  {
+    "id": "wbc-lymphoma",
+    "question": "What was the WBC count in the lymphoma patient?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "The WBC count was 11.2 x 10^9/L, which is high (reference range 4.0-11.0).",
+    "gold": [
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["11.2"],
+    "notes": "WBC appears in four synthetic reports and the lab section never says 'lymphoma', so the patient has to be pinned down via DIAGNOSIS."
+  },
+  {
+    "id": "hba1c-diabetic",
+    "question": "What is the HbA1c of the diabetic patient?",
+    "type": "lookup",
+    "answerable": true,
+    "reference": "The HbA1c is 9.2%, above the target of <7.0%.",
+    "gold": [
+      {"source_file": "report_002_diabetes_management.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["9.2%"],
+    "notes": "Distractor: report_006 (stroke) also reports an HbA1c (6.1%, labelled pre-diabetic)."
+  },
+  {
+    "id": "meds-acute-mi-cross-section",
+    "question": "What medications was the acute MI patient discharged with?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "Aspirin 100 mg OD, Ticagrelor 90 mg BID, Atorvastatin 80 mg OD, Ramipril 5 mg OD, Bisoprolol 5 mg OD, and Pantoprazole 40 mg OD.",
+    "gold": [
+      {"source_file": "report_003_acute_mi.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_003_acute_mi.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["Aspirin", "Ticagrelor", "Atorvastatin", "Ramipril", "Bisoprolol", "Pantoprazole"]
+  },
+  {
+    "id": "stroke-door-to-needle",
+    "question": "What was the door-to-needle time for the stroke patient's thrombolysis?",
+    "type": "lookup",
+    "answerable": true,
+    "reference": "27 minutes (tPA administered at 10:22).",
+    "gold": [
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"}
+    ],
+    "key_facts": ["27 min"]
+  },
+  {
+    "id": "stroke-anticoagulant-cross-section",
+    "question": "What anticoagulant is the stroke patient on and why?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "Apixaban 5 mg BID, for anticoagulation due to newly diagnosed atrial fibrillation (the cause of the stroke).",
+    "gold": [
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_006_stroke.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["Apixaban", "5 mg", "atrial fibrillation|AF"]
+  },
+  {
+    "id": "sepsis-lactate",
+    "question": "What was the lactate level in the sepsis patient?",
+    "type": "lookup",
+    "answerable": true,
+    "reference": "4.8 mmol/L, critically high (reference <2.0), indicating tissue hypoperfusion.",
+    "gold": [
+      {"source_file": "report_009_sepsis.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["4.8"],
+    "notes": "Lactate is only reported in report_009, so the value itself identifies the document."
+  },
+  {
+    "id": "lymphoma-id-cross-section",
+    "question": "What is the patient ID of the lymphoma patient?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "SYN-2024-001.",
+    "gold": [
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "PATIENT INFORMATION"}
+    ],
+    "key_facts": ["SYN-2024-001"]
+  },
+  {
+    "id": "lymphoma-id-typo",
+    "question": "whats the id of lymphoma patien",
+    "type": "typo",
+    "answerable": true,
+    "reference": "SYN-2024-001.",
+    "gold": [
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "PATIENT INFORMATION"}
+    ],
+    "key_facts": ["SYN-2024-001"],
+    "twin": "lymphoma-id-cross-section"
+  },
+  {
+    "id": "hba1c-diabetic-typo",
+    "question": "waht is the hba1c of the diabetc patiant",
+    "type": "typo",
+    "answerable": true,
+    "reference": "The HbA1c is 9.2%, above the target of <7.0%.",
+    "gold": [
+      {"source_file": "report_002_diabetes_management.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["9.2%"],
+    "twin": "hba1c-diabetic"
+  },
+  {
+    "id": "sepsis-lactate-typo",
+    "question": "wat was the lactat lvl in the sepis patient",
+    "type": "typo",
+    "answerable": true,
+    "reference": "4.8 mmol/L, critically high (reference <2.0).",
+    "gold": [
+      {"source_file": "report_009_sepsis.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["4.8"],
+    "twin": "sepsis-lactate"
+  },
+  {
+    "id": "meds-acute-mi-paraphrase",
+    "question": "which pills did the heart attack guy go home on?",
+    "type": "typo",
+    "answerable": true,
+    "reference": "Aspirin 100 mg OD, Ticagrelor 90 mg BID, Atorvastatin 80 mg OD, Ramipril 5 mg OD, Bisoprolol 5 mg OD, and Pantoprazole 40 mg OD.",
+    "gold": [
+      {"source_file": "report_003_acute_mi.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_003_acute_mi.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["Aspirin", "Ticagrelor", "Atorvastatin", "Ramipril", "Bisoprolol", "Pantoprazole"],
+    "notes": "Colloquial paraphrase rather than a misspelling: 'heart attack' never appears in the corpus, 'go home on' means discharge medications.",
+    "twin": "meds-acute-mi-cross-section"
+  },
+  {
+    "id": "pneumonia-curb65",
+    "question": "What was the CURB-65 score of the pneumonia patient and how severe was it judged to be?",
+    "type": "lookup",
+    "answerable": true,
+    "reference": "CURB-65 score of 1, i.e. mild; managed as an outpatient.",
+    "gold": [
+      {"source_file": "report_004_pneumonia.pdf", "section": "DIAGNOSIS"}
+    ],
+    "key_facts": ["CURB-65 score 1|score of 1|CURB-65 of 1|CURB-65: 1", "mild"]
+  },
+  {
+    "id": "renal-stopped-meds",
+    "question": "Which medications were stopped in the patient with stage 4 chronic kidney disease?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "NSAIDs and metformin were stopped (contraindicated at an eGFR of 18).",
+    "gold": [
+      {"source_file": "report_005_renal_failure.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_005_renal_failure.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["NSAID", "metformin"]
+  },
+  {
+    "id": "depression-sertraline",
+    "question": "What antidepressant was started for the patient with major depressive disorder, and at what dose?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "Sertraline 50 mg once daily, to be increased to 100 mg at week 4 if tolerated.",
+    "gold": [
+      {"source_file": "report_007_depression_anxiety.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_007_depression_anxiety.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["Sertraline", "50 mg"]
+  },
+  {
+    "id": "hip-fracture-enoxaparin",
+    "question": "For how long is the patient with the femoral neck fracture to receive enoxaparin?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "35 days (Enoxaparin 40 mg SC once daily for VTE prophylaxis).",
+    "gold": [
+      {"source_file": "report_008_fracture_ortho.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_008_fracture_ortho.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["35 days"],
+    "notes": "FOLLOW-UP repeats the 35 days; MEDICATIONS is listed as the primary source."
+  },
+  {
+    "id": "thyroid-surgeon",
+    "question": "Who was the operating surgeon for the papillary thyroid carcinoma patient?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "Dr. H. Bouzid.",
+    "gold": [
+      {"source_file": "report_010_thyroid_cancer.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_010_thyroid_cancer.pdf", "section": "PATIENT INFORMATION"}
+    ],
+    "key_facts": ["Bouzid"]
+  },
+  {
+    "id": "sepsis-intensivist",
+    "question": "How old is the patient in septic shock, and who was the admitting intensivist?",
+    "type": "cross_section",
+    "answerable": true,
+    "reference": "51 years old; admitting intensivist Dr. R. Messaoudi.",
+    "gold": [
+      {"source_file": "report_009_sepsis.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_009_sepsis.pdf", "section": "PATIENT INFORMATION"}
+    ],
+    "key_facts": ["51", "Messaoudi"]
+  },
+  {
+    "id": "mts-echo-ef",
+    "question": "What ejection fraction was estimated on the 2-D echocardiogram report?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "70% to 75%, with hyperdynamic left ventricular systolic function.",
+    "gold": [
+      {"source_file": "mts_004_2-d-echocardiogram-2.pdf", "section": "FULL_DOCUMENT"}
+    ],
+    "key_facts": ["70", "75"]
+  },
+  {
+    "id": "mts-ectopy-home-meds",
+    "question": "What home medications is the patient seen for ventricular ectopy taking?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "Aspirin 81 mg, clopidogrel 75 mg, allopurinol 100 mg, levothyroxine 100 mcg, lisinopril 10 mg, metoprolol 25 mg and atorvastatin 10 mg daily.",
+    "gold": [
+      {"source_file": "mts_005_ventricular-ectopy-consult.pdf", "section": "REASON FOR CONSULTATION"},
+      {"source_file": "mts_005_ventricular-ectopy-consult.pdf", "section": "MEDICATIONS AT HOME"}
+    ],
+    "key_facts": ["Aspirin", "Clopidogrel", "Allopurinol", "Levothyroxine", "Lisinopril", "Metoprolol", "Atorvastatin"],
+    "notes": "Cross-section in an MTSamples note: the medication list never mentions ectopy."
+  },
+  {
+    "id": "mts-pacemaker-rates",
+    "question": "What lower and upper rates was the VVIR pacemaker programmed to?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "Lower rate 60, upper rate 120.",
+    "gold": [
+      {"source_file": "mts_006_vvir-permanent-pacemaker-insertion.pdf", "section": "VVIR"}
+    ],
+    "key_facts": ["60", "120"],
+    "notes": "The PDF parser split the sentence across the 'BRADY PARAMETER SETTINGS' and 'VVIR' chunks; the rates themselves are in VVIR."
+  },
+  {
+    "id": "mts-ob-us-afi-weight",
+    "question": "On the obstetric ultrasound at 37 weeks 4 days, what were the amniotic fluid index and the estimated fetal weight?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "AFI of 4 cm (mild oligohydramnios); estimated fetal weight 3289 g (7 lb 4 oz), 24th percentile.",
+    "gold": [
+      {"source_file": "mts_008_ultrasound-ob-5.pdf", "section": "IMPRESSION"}
+    ],
+    "key_facts": ["4cm", "3289"],
+    "notes": "Distractor: mts_027 is a second, early-pregnancy OB ultrasound."
+  },
+  {
+    "id": "mts-wrist-tourniquet",
+    "question": "To what pressure was the tourniquet inflated during the dorsal wrist ganglion excision?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "250 mmHg.",
+    "gold": [
+      {"source_file": "mts_010_wrist-ganglion-excision.pdf", "section": "PROCEDURE"}
+    ],
+    "key_facts": ["250"],
+    "notes": "mts_010 has two chunks both labelled PROCEDURE; the gold pair covers both."
+  },
+  {
+    "id": "mts-vertebroplasty-cement",
+    "question": "How much cement was injected during the T11 vertebroplasty?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "A total of 1.2 cc of polymethylmethacrylate cement.",
+    "gold": [
+      {"source_file": "mts_011_vertebroplasty.pdf", "section": "SUMMARY"}
+    ],
+    "key_facts": ["1.2 cc|1.2 mL|1.2 ml"]
+  },
+  {
+    "id": "mts-ulnar-findings",
+    "question": "What were the operative findings during the right ulnar nerve transposition and carpal tunnel release?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "A thickened transverse carpal ligament and a partially subluxed ulnar nerve.",
+    "gold": [
+      {"source_file": "mts_012_ulnar-nerve-transposition-olecranon-bursa-excision.pdf", "section": "FINDINGS"}
+    ],
+    "key_facts": ["transverse carpal ligament", "sublux"]
+  },
+  {
+    "id": "mts-airway-foreign-body",
+    "question": "What foreign body caused the 17-year-old girl's airway compromise?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "A (rather large) fishbone, removed in the operating room.",
+    "gold": [
+      {"source_file": "mts_013_airway-compromise-foreign-body-er-visit.pdf", "section": "HISTORY OF PRESENT ILLNESS"}
+    ],
+    "key_facts": ["fishbone|fish bone"],
+    "notes": "HOSPITAL COURSE also mentions the fishbone; HPI is where the 17-year-old is identified."
+  },
+  {
+    "id": "mts-viral-no-antibiotics",
+    "question": "Why did the ER doctor decline to give antibiotics to the 68-year-old man with a viral syndrome?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "His illness looked viral (normal temperature, pulse and respiratory rate), and because he is on Coumadin, antibiotics could alter gut flora and raise his INR, risking serious bleeding.",
+    "gold": [
+      {"source_file": "mts_014_viral-syndrome-er-visit.pdf", "section": "IMPRESSION"}
+    ],
+    "key_facts": ["Coumadin|warfarin", "INR"]
+  },
+  {
+    "id": "mts-ileostomy-output",
+    "question": "What maximum daily ileostomy output was the patient advised to aim for after her APR?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "2 liters or less per day.",
+    "gold": [
+      {"source_file": "mts_016_wound-check-status-post-apr.pdf", "section": "ASSESSMENT AND PLAN"}
+    ],
+    "key_facts": ["2 liters|2 L|2 litres"]
+  },
+  {
+    "id": "mts-esophageal-penny",
+    "question": "What foreign body was found in the esophagus during the upper endoscopy?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "A penny in the proximal esophagus, removed with a coin removal forceps.",
+    "gold": [
+      {"source_file": "mts_017_upper-endoscopy-foreign-body-removal.pdf", "section": "PROCEDURE"}
+    ],
+    "key_facts": ["penny"]
+  },
+  {
+    "id": "mts-moyamoya-outcome",
+    "question": "What did the cerebral angiogram show in the moyamoya patient, and what did she eventually die of?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "Occlusion of the left MCA just distal to its origin and of the right MCA distal to the temporal branch, with collateral filling from the ACAs; she died of stage IV squamous cell cervical cancer.",
+    "gold": [
+      {"source_file": "mts_019_moyamoya-disease.pdf", "section": "B12"}
+    ],
+    "key_facts": ["occlusion", "cervical cancer|cancer of the cervix"],
+    "notes": "Section label 'B12' is a parser artefact (the header detector caught a lab name); the chunk holds the angiogram and outcome."
+  },
+  {
+    "id": "mts-wilson-aspirin",
+    "question": "Why was the patient with Wilson's disease placed on aspirin rather than Coumadin for his atrial fibrillation?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "A hepatologist recommended avoiding Coumadin because of questionable significant liver disease (reported cirrhosis), so he was put on aspirin 325 mg daily.",
+    "gold": [
+      {"source_file": "mts_021_wilson-s-disease-letter.pdf", "section": "FULL_DOCUMENT"}
+    ],
+    "key_facts": ["liver|cirrhosis", "325"]
+  },
+  {
+    "id": "mts-turp-antibiotic",
+    "question": "Which antibiotic was the patient discharged on after his transurethral resection of the prostate, and for how long?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "Bactrim DS once a day for ten days.",
+    "gold": [
+      {"source_file": "mts_024_urology-discharge-summary.pdf", "section": "COURSE IN THE HOSPITAL"}
+    ],
+    "key_facts": ["Bactrim", "ten days|10 days"]
+  },
+  {
+    "id": "mts-vacuum-delivery-apgar",
+    "question": "What were the Apgar scores of the baby delivered by vacuum-assisted vaginal delivery?",
+    "type": "mtsamples",
+    "answerable": true,
+    "reference": "9 and 9.",
+    "gold": [
+      {"source_file": "mts_025_vaginal-delivery-vacuum-assisted.pdf", "section": "FINDINGS"}
+    ],
+    "key_facts": ["9 and 9|9/9|9, 9"]
+  },
+  {
+    "id": "unans-thyroid-blood-type",
+    "question": "What is the blood type of the thyroid cancer patient?",
+    "type": "unanswerable",
+    "answerable": false,
+    "reference": "Not stated in the documents.",
+    "gold": [],
+    "key_facts": [],
+    "notes": "Distractor: mts_024 (urology discharge) gives a blood group, but for a different patient."
+  },
+  {
+    "id": "unans-mi-bmi",
+    "question": "What was the BMI of the acute MI patient?",
+    "type": "unanswerable",
+    "answerable": false,
+    "reference": "Not stated in the documents.",
+    "gold": [],
+    "key_facts": [],
+    "notes": "No BMI, height or weight anywhere in report_003."
+  },
+  {
+    "id": "unans-diabetic-insulin",
+    "question": "What dose of insulin glargine is the diabetic patient taking?",
+    "type": "unanswerable",
+    "answerable": false,
+    "reference": "Not stated in the documents; the diabetic patient is on metformin, sitagliptin and (newly) empagliflozin, no insulin.",
+    "gold": [],
+    "key_facts": [],
+    "notes": "False-premise question. The only insulin in the corpus is Humulin in mts_013 (different patient)."
+  },
+  {
+    "id": "unans-uc-colonoscopy",
+    "question": "What did the most recent colonoscopy show for the patient with ulcerative colitis?",
+    "type": "unanswerable",
+    "answerable": false,
+    "reference": "Not stated in the documents.",
+    "gold": [],
+    "key_facts": [],
+    "notes": "mts_016 covers the ulcerative colitis patient after APR but never mentions a colonoscopy."
+  },
+  {
+    "id": "mh-creatinine-above-2",
+    "question": "Which of the synthetic-report patients had a creatinine above 2.0 mg/dL, and what were the values?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Two: the stage 4 CKD patient (SYN-2024-005, 3.2 mg/dL) and the septic shock patient (SYN-2024-009, 2.8 mg/dL, acute kidney injury from a baseline of 0.9). The others reported are 1.3 (diabetes), 1.1 (acute MI) and 1.1 (hip fracture).",
+    "gold": [
+      {"source_file": "report_005_renal_failure.pdf", "section": "LABORATORY RESULTS"},
+      {"source_file": "report_009_sepsis.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["3.2", "2.8"],
+    "notes": "Gold lists the positive evidence only. Strictly ruling out the other patients also needs the lab sections of report_002, 003 and 008."
+  },
+  {
+    "id": "mh-wbc-compare",
+    "question": "Compare the WBC counts of the lymphoma, pneumonia and septic shock patients. Which one was highest?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Lymphoma 11.2, pneumonia 16.4, septic shock 22.4 (x 10^9/L); the septic shock patient was highest.",
+    "gold": [
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "LABORATORY RESULTS"},
+      {"source_file": "report_004_pneumonia.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_004_pneumonia.pdf", "section": "LABORATORY RESULTS"},
+      {"source_file": "report_009_sepsis.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_009_sepsis.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["11.2", "16.4", "22.4"]
+  },
+  {
+    "id": "mh-statin-ramipril",
+    "question": "Which patients were discharged on both atorvastatin 80 mg and ramipril 5 mg, and what were they being treated for?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Two: SYN-2024-003 (acute inferior STEMI) and SYN-2024-006 (acute ischaemic stroke, cardioembolic from atrial fibrillation).",
+    "gold": [
+      {"source_file": "report_003_acute_mi.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_003_acute_mi.pdf", "section": "MEDICATIONS"},
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_006_stroke.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["Myocardial Infarction|STEMI|heart attack", "stroke"],
+    "notes": "report_002 also has atorvastatin (20 then 40 mg) but no ramipril."
+  },
+  {
+    "id": "mh-bisoprolol",
+    "question": "Which patients were put on bisoprolol, and at what dose was each?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "The acute MI patient (SYN-2024-003) on bisoprolol 5 mg OD at discharge, and the stroke patient (SYN-2024-006) on bisoprolol 2.5 mg OD for AF rate control.",
+    "gold": [
+      {"source_file": "report_003_acute_mi.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_003_acute_mi.pdf", "section": "MEDICATIONS"},
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_006_stroke.pdf", "section": "TREATMENT PLAN"}
+    ],
+    "key_facts": ["2.5 mg", "5 mg", "Myocardial Infarction|STEMI|heart attack|SYN-2024-003", "stroke|SYN-2024-006"],
+    "notes": "The stroke patient's bisoprolol is in TREATMENT PLAN, not MEDICATIONS. The MI dose (5 mg) is not a separate key fact because '5 mg' is a substring of '2.5 mg'."
+  },
+  {
+    "id": "mh-renal-rrt",
+    "question": "The patient whose creatinine rose from 1.4 to 3.2 mg/dL during 2024: which renal replacement therapy options were discussed with him?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Haemodialysis via an arteriovenous fistula, home peritoneal dialysis, and pre-emptive transplant evaluation.",
+    "gold": [
+      {"source_file": "report_005_renal_failure.pdf", "section": "CHIEF COMPLAINT"},
+      {"source_file": "report_005_renal_failure.pdf", "section": "TREATMENT PLAN"}
+    ],
+    "key_facts": ["haemodialysis|hemodialysis", "peritoneal dialysis", "transplant"],
+    "notes": "Two-step within one document: identify the patient from the creatinine trend, then read the treatment plan."
+  },
+  {
+    "id": "mh-pth-abnormal",
+    "question": "Which patients had an abnormal PTH result, and was each one high or low?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "The thyroid cancer patient had a low PTH of 8 pg/mL after total thyroidectomy; the stage 4 CKD patient had a high PTH of 312 pg/mL (secondary hyperparathyroidism).",
+    "gold": [
+      {"source_file": "report_005_renal_failure.pdf", "section": "LABORATORY RESULTS"},
+      {"source_file": "report_010_thyroid_cancer.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["8 pg/mL", "312"]
+  },
+  {
+    "id": "mh-female-ages",
+    "question": "How many of the synthetic-report patients (SYN-2024-xxx) are female, and how old is each of them?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Six: SYN-2024-001 (45), SYN-2024-004 (33), SYN-2024-006 (63), SYN-2024-007 (28), SYN-2024-008 (82) and SYN-2024-010 (41).",
+    "gold": [
+      {"source_file": "report_001_lymphoma_staging.pdf", "section": "PATIENT INFORMATION"},
+      {"source_file": "report_004_pneumonia.pdf", "section": "PATIENT INFORMATION"},
+      {"source_file": "report_006_stroke.pdf", "section": "PATIENT INFORMATION"},
+      {"source_file": "report_007_depression_anxiety.pdf", "section": "PATIENT INFORMATION"},
+      {"source_file": "report_008_fracture_ortho.pdf", "section": "PATIENT INFORMATION"},
+      {"source_file": "report_010_thyroid_cancer.pdf", "section": "PATIENT INFORMATION"}
+    ],
+    "key_facts": ["45", "33", "63", "28", "82", "41"],
+    "notes": "Pure aggregation over ten near-identical PATIENT INFORMATION chunks; top-3 retrieval cannot cover it."
+  },
+  {
+    "id": "mh-af-anticoagulation",
+    "question": "Which patients across all the documents have atrial fibrillation, and what anticoagulant or antiplatelet is each one taking?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "Stroke patient SYN-2024-006: apixaban 5 mg BID (aspirin bridging). The 68-year-old ER patient with a viral syndrome: Coumadin. The Wilson's disease patient: aspirin 325 mg daily (Coumadin avoided because of possible liver disease).",
+    "gold": [
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_006_stroke.pdf", "section": "MEDICATIONS"},
+      {"source_file": "mts_014_viral-syndrome-er-visit.pdf", "section": "PAST HISTORY"},
+      {"source_file": "mts_021_wilson-s-disease-letter.pdf", "section": "FULL_DOCUMENT"}
+    ],
+    "key_facts": ["Apixaban", "Coumadin|warfarin", "aspirin"]
+  },
+  {
+    "id": "mh-ef-compare",
+    "question": "Compare the left ventricular ejection fractions reported for the STEMI patient, in the 2-D echocardiogram report, and in the ventricular ectopy consult.",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "STEMI patient 48% post-procedure; 2-D echo report 70-75% (hyperdynamic); ventricular ectopy consult 40% (echo from 08/26/2009).",
+    "gold": [
+      {"source_file": "report_003_acute_mi.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "mts_004_2-d-echocardiogram-2.pdf", "section": "FULL_DOCUMENT"},
+      {"source_file": "mts_005_ventricular-ectopy-consult.pdf", "section": "REASON FOR CONSULTATION"},
+      {"source_file": "mts_005_ventricular-ectopy-consult.pdf", "section": "IMAGING STUDIES"}
+    ],
+    "key_facts": ["48", "70", "40"]
+  },
+  {
+    "id": "mh-ob-ultrasounds",
+    "question": "There are two obstetric ultrasound reports. What gestational age did each one estimate, and which one raised concern that the pregnancy might not be viable?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "One estimated 37 weeks 4 days (live pregnancy, mild oligohydramnios); the other estimated 6 weeks 0 days and raised concern because no fetal heart tones were seen, possibly an inevitable abortion.",
+    "gold": [
+      {"source_file": "mts_008_ultrasound-ob-5.pdf", "section": "IMPRESSION"},
+      {"source_file": "mts_027_ultrasound-ob-8.pdf", "section": "IMPRESSION"}
+    ],
+    "key_facts": ["37 weeks", "6 weeks", "heart"]
+  },
+  {
+    "id": "mh-enoxaparin",
+    "question": "Which patients have enoxaparin in their medication orders, and why was it held in one of them?",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "The hip fracture patient (SYN-2024-008) gets enoxaparin 40 mg SC daily for 35 days of VTE prophylaxis; in the septic shock patient (SYN-2024-009) it was held pending platelet recovery (platelets 88, DIC risk).",
+    "gold": [
+      {"source_file": "report_008_fracture_ortho.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_008_fracture_ortho.pdf", "section": "MEDICATIONS"},
+      {"source_file": "report_009_sepsis.pdf", "section": "MEDICATIONS"}
+    ],
+    "key_facts": ["femur|hip", "35 days", "platelet"]
+  },
+  {
+    "id": "mh-hba1c-all",
+    "question": "List every HbA1c value reported in the documents and say which patient each belongs to.",
+    "type": "multi_hop",
+    "answerable": true,
+    "reference": "9.2% for the type 2 diabetes patient (SYN-2024-002) and 6.1% (pre-diabetic range) for the stroke patient (SYN-2024-006).",
+    "gold": [
+      {"source_file": "report_002_diabetes_management.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_002_diabetes_management.pdf", "section": "LABORATORY RESULTS"},
+      {"source_file": "report_006_stroke.pdf", "section": "DIAGNOSIS"},
+      {"source_file": "report_006_stroke.pdf", "section": "LABORATORY RESULTS"}
+    ],
+    "key_facts": ["9.2", "6.1"]
+  }
+]

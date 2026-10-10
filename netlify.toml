@@ -1,0 +1,6 @@
+# Static frontend on Netlify; the API runs on Modal (modal_app.py).
+# Set CLINICALRAG_API_BASE in the Netlify site settings to the Modal URL,
+# e.g. https://<workspace>--clinicalrag-web.modal.run (no trailing slash).
+[build]
+  publish = "src/frontend"
+  command = "echo \"export const API_BASE = '${CLINICALRAG_API_BASE}';\" > src/frontend/static/js/config.js"

@@ -2,11 +2,12 @@
 Tests for the section-aware chunker.
 """
 
-import pytest
 from pathlib import Path
-from src.ocr.extractor import extract
-from src.chunking.chunker import chunk_document, Chunk
 
+import pytest
+
+from src.chunking.chunker import Chunk, chunk_document
+from src.ocr.extractor import extract
 
 SAMPLE_PDF = Path("data/raw/report_001_lymphoma_staging.pdf")
 

@@ -2,6 +2,7 @@
 .env
 
 .venv/
+.venv-studio/
 __pycache__/
 *.pyc
 .git/
@@ -13,6 +14,7 @@ __pycache__/
 # local copies in, and don't waste build-context upload time on them.
 data/processed/
 data/vectorstore/
+data/vectorstore_exp/
 data/eval/
 
 # Third-party datasets used only for OCR testing / MTSamples sourcing —

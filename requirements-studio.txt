@@ -1,0 +1,20 @@
+# LangGraph Studio (langgraph dev), in its OWN venv, not the app's:
+# langgraph-cli[inmem] needs Starlette >= 1.3 and protobuf 6, and the app
+# pins fastapi==0.115.6, which only works with Starlette < 0.42.
+#
+#   py -3.13 -m venv .venv-studio
+#   .venv-studio\Scripts\pip install -r requirements-studio.txt
+#   .venv-studio\Scripts\langgraph dev
+#
+# Only what the agent graph imports (src/agent -> retrieval, generation):
+# no FastAPI app, no OCR.
+
+langgraph-cli[inmem]==0.4.33
+langgraph==1.2.9
+langchain-core==1.5.1
+langchain-groq==1.1.3
+groq==0.37.1
+python-dotenv==1.0.1
+sentence-transformers==3.3.1
+chromadb==0.6.3
+rank-bm25==0.2.2

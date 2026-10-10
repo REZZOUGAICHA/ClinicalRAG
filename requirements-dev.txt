@@ -1,0 +1,21 @@
+# Dev-only tools for looking inside the agent. Not needed to run the app,
+# and not installed in the Docker image. Install on top of requirements.txt:
+#   pip install -r requirements.txt -r requirements-dev.txt
+# Everything here installs into the app's venv without upgrading anything
+# requirements.txt pins (checked on Python 3.13).
+
+# scripts/draw_agent_graph.py: ASCII drawing of the graph in the terminal
+grandalf==0.8
+
+# Tracing (src/tracing.py, on with CLINICALRAG_TRACING=phoenix): send every
+# LLM/tool call as an OpenTelemetry span to a local Phoenix server.
+arize-phoenix-otel==0.17.1
+openinference-instrumentation-langchain==0.1.78
+
+# --- Not in this file, on purpose ---
+# The Phoenix server itself (arize-phoenix) and LangGraph Studio's local
+# server (langgraph-cli[inmem]) both need newer FastAPI/Starlette/protobuf
+# than the app pins, so installing them here would break the app. Run them
+# in their own environments instead:
+#   Phoenix:  uvx --python 3.13 --from arize-phoenix==20.20.0 phoenix serve
+#   Studio:   see requirements-studio.txt
