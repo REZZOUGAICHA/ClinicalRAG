@@ -216,16 +216,11 @@ def build_graph(chat=get_chat_model, simple_answer=None, max_tool_calls: int = M
             return ask(question)
 
     def route(state: AgentState) -> dict:
-        messages = [SystemMessage(ROUTER_PROMPT), HumanMessage(state["question"])]
-        try:
-            reply = invoke_with_retry(chat("router"), messages)
-            match = re.search(r"\b(simple|complex)\b", str(reply.content).lower())
-            label = match.group(1) if match else "complex"
-        except Exception:
-            # A wrong "complex" costs a few extra calls; a wrong "simple" can
-            # cost the answer. So any failure here goes the safe way.
-            label = "complex"
-        return {"route": label}
+        # The API's "auto" mode classifies first (so simple questions can use
+        # the streaming pipeline) and passes the decision in; don't ask twice.
+        if state.get("route"):
+            return {"route": state["route"]}
+        return {"route": classify_question(state["question"], chat)}
 
     def simple(state: AgentState) -> dict:
         result = dict(simple_answer(state["question"]))
@@ -376,9 +371,25 @@ def recursion_limit(max_tool_calls: int = MAX_TOOL_CALLS) -> int:
     return 2 * max_tool_calls + 10
 
 
-def initial_state(question: str) -> AgentState:
-    return {"question": question, "messages": [HumanMessage(question)], "chunks": [],
-            "trace": [], "tool_calls_used": 0, "attempts": 0}
+def classify_question(question: str, chat=get_chat_model) -> str:
+    """"simple" (one fact from one document) or "complex", via the router prompt."""
+    messages = [SystemMessage(ROUTER_PROMPT), HumanMessage(question)]
+    try:
+        reply = invoke_with_retry(chat("router"), messages)
+        match = re.search(r"\b(simple|complex)\b", str(reply.content).lower())
+        return match.group(1) if match else "complex"
+    except Exception:
+        # A wrong "complex" costs a few extra calls; a wrong "simple" can
+        # cost the answer. So any failure here goes the safe way.
+        return "complex"
+
+
+def initial_state(question: str, route: str | None = None) -> AgentState:
+    state = {"question": question, "messages": [HumanMessage(question)], "chunks": [],
+             "trace": [], "tool_calls_used": 0, "attempts": 0}
+    if route:
+        state["route"] = route
+    return state
 
 
 def to_result(state: AgentState, model: str | None = None) -> dict:
@@ -417,7 +428,7 @@ def ask_agent(question: str, graph=None) -> dict:
     return to_result(state)
 
 
-def stream_agent(question: str, graph=None, max_tool_calls: int = MAX_TOOL_CALLS):
+def stream_agent(question: str, graph=None, max_tool_calls: int = MAX_TOOL_CALLS, route: str | None = None):
     """
     Yields progress events while the graph runs, then the final result:
       {"type": "node",   "node": "agent"}             (a node is starting)
@@ -430,7 +441,7 @@ def stream_agent(question: str, graph=None, max_tool_calls: int = MAX_TOOL_CALLS
     graph = graph or _default_graph()
     final = None
     used = 0
-    for mode, data in graph.stream(initial_state(question), {"recursion_limit": recursion_limit()},
+    for mode, data in graph.stream(initial_state(question, route), {"recursion_limit": recursion_limit()},
                                    stream_mode=["updates", "values", "tasks"]):
         if mode == "values":
             final = data

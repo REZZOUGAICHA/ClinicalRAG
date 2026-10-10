@@ -16,8 +16,9 @@ WHAT THIS FILE DOES:
 ENDPOINTS:
   GET  /health      → server status + how many chunks are indexed
   GET  /documents   → list of ingested document filenames
-  POST /ask         → streaming Q&A (returns SSE stream); "mode": "agent" uses
-                      the LangGraph agent in src/agent instead of the pipeline
+  POST /ask         → streaming Q&A (returns SSE stream). "mode": "pipeline"
+                      (default), "agent" (LangGraph agent in src/agent), or
+                      "auto" (router decides; what the web UI uses)
   POST /upload      → upload a PDF and ingest it into the pipeline
 
 HOW TO RUN:
@@ -43,7 +44,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from src.agent import stream_agent
+from src.agent import classify_question, stream_agent
 from src.agent.llm import agent_model
 from src.chunking.chunker import chunk_document
 from src.embeddings.embedder import MODEL_NAME as EMBEDDING_MODEL
@@ -140,7 +141,7 @@ class QuestionRequest(BaseModel):
     """
     query: str
     top_k: int = 3
-    mode: Literal["pipeline", "agent"] = "pipeline"
+    mode: Literal["pipeline", "agent", "auto"] = "pipeline"
 
 
 # ---------------------------------------------------------------------------
@@ -209,7 +210,12 @@ async def ask(req: QuestionRequest):
     if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
 
-    events = _agent_events(req.query) if req.mode == "agent" else _pipeline_events(req.query, req.top_k)
+    if req.mode == "agent":
+        events = _agent_events(req.query)
+    elif req.mode == "auto":
+        events = _auto_events(req.query, req.top_k)
+    else:
+        events = _pipeline_events(req.query, req.top_k)
     return StreamingResponse(
         events,
         media_type="text/event-stream",
@@ -245,7 +251,22 @@ def _pipeline_events(query: str, top_k: int):
         yield _sse({"type": "done"})
 
 
-def _agent_events(query: str):
+def _auto_events(query: str, top_k: int):
+    """
+    Classify once, then take the cheaper path when it's enough: simple
+    questions go through the streaming pipeline unchanged, complex ones to
+    the agent with the decision passed in so the router doesn't run twice.
+    """
+    route = classify_question(query)
+    if route == "simple":
+        yield _sse({"type": "step", "content": "Single lookup, using the standard pipeline",
+                    "route": "simple", "node": "route"})
+        yield from _pipeline_events(query, top_k)
+    else:
+        yield from _agent_events(query, route=route)
+
+
+def _agent_events(query: str, route: str | None = None):
     """
     Same event protocol as stream_answer, plus "step" events while the agent
     works and a "node" event each time a graph node starts (for the live
@@ -257,7 +278,7 @@ def _agent_events(query: str):
     thread, so the blocking LLM and retrieval calls don't stall the event loop.
     """
     try:
-        for ev in stream_agent(query):
+        for ev in stream_agent(query, route=route):
             if ev["type"] == "route":
                 label = ("Single lookup, using the standard pipeline" if ev["route"] == "simple"
                          else "Multi-step question, planning lookups")

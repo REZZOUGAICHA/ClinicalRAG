@@ -386,3 +386,13 @@ def test_planner_error_text_stays_out_of_the_trace():
               "answer": _replies()}
     result = _run(agent_graph.build_graph(chat=models.__getitem__))
     assert "org_123" not in str(result["trace"])
+
+
+def test_preset_route_skips_the_router():
+    def chat(purpose):
+        assert purpose != "router", "a route passed in must not be classified again"
+        return {"agent": _replies(AIMessage("DONE")), "answer": _replies(AIMessage(REFUSAL))}[purpose]
+
+    graph = agent_graph.build_graph(chat=chat, simple_answer=lambda q: pytest.fail("took simple"))
+    state = graph.invoke(agent_graph.initial_state("q", route="complex"), {"recursion_limit": 20})
+    assert state["route"] == "complex"
