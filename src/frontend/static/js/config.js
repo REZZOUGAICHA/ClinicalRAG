@@ -1,3 +1,5 @@
-// Where the API lives. Empty = same server that serves this page (local runs,
-// Docker). The Netlify build overwrites this file with the Modal URL.
-export const API_BASE = '';
+// Where the API lives. On the Netlify site it's the Modal backend; anywhere
+// else (local runs, Docker) the same server serves both the page and the API.
+const MODAL_API = 'https://aicharzg03--clinicalrag-web.modal.run';
+
+export const API_BASE = location.hostname.endsWith('.netlify.app') ? MODAL_API : '';

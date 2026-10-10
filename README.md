@@ -216,7 +216,7 @@ docker run -p 7860:7860 -e GROQ_API_KEY=your-key-here clinicalrag
 The live demo is split in two:
 
 - **Backend on [Modal](https://modal.com)** (`modal_app.py`). Modal builds the same `Dockerfile` used locally, so the index, contexts and models are baked in exactly as tested. It runs on 2 CPUs / 4 GB, scales to zero after 5 idle minutes, and is capped at one container. The Groq key is a Modal secret, and CORS only allows the frontend's domain.
-- **Frontend on [Netlify](https://netlify.com)** (`netlify.toml`). The static files are served from a CDN, so the page loads instantly even while the backend is waking up. The build writes the API address from the `CLINICALRAG_API_BASE` environment variable into `static/js/config.js`.
+- **Frontend on [Netlify](https://netlify.com)** (`netlify.toml`). The static files are served from a CDN, so the page loads instantly even while the backend is waking up. There is no build step: `static/js/config.js` uses the Modal URL when the page is served from `*.netlify.app`, and the same server otherwise, so local runs are unchanged.
 
 ```bash
 # backend (needs a Modal secret "clinicalrag-groq" with GROQ_API_KEY)
