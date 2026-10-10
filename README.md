@@ -1,14 +1,10 @@
----
-title: ClinicalRAG
-sdk: docker
-app_port: 7860
----
-
 # ClinicalRAG
 
 A clinical document question answering system. Upload clinical reports (typed, scanned, or handwritten), ask questions in plain English, and get answers grounded in the actual source documents. Every claim is traceable to a specific passage, and clicking a citation opens the actual PDF page with the cited text highlighted.
 
 Built as a personal project to explore real-world RAG engineering: hybrid retrieval, real OCR tested against genuine scanned and handwritten datasets instead of synthetic stand-ins, and retrieval/generation quality measured with RAGAS rather than assumed.
+
+**Live demo: [clinicalqa.netlify.app](https://clinicalqa.netlify.app)**. The backend scales to zero when idle, so the first question after a quiet period takes about 20 seconds while it starts.
 
 ## What it does
 
@@ -215,11 +211,23 @@ docker build -t clinicalrag .
 docker run -p 7860:7860 -e GROQ_API_KEY=your-key-here clinicalrag
 ```
 
+## Deployment
+
+The live demo is split in two:
+
+- **Backend on [Modal](https://modal.com)** (`modal_app.py`). Modal builds the same `Dockerfile` used locally, so the index, contexts and models are baked in exactly as tested. It runs on 2 CPUs / 4 GB, scales to zero after 5 idle minutes, and is capped at one container. The Groq key is a Modal secret, and CORS only allows the frontend's domain.
+- **Frontend on [Netlify](https://netlify.com)** (`netlify.toml`). The static files are served from a CDN, so the page loads instantly even while the backend is waking up. There is no build step: `static/js/config.js` uses the Modal URL when the page is served from `*.netlify.app`, and the same server otherwise, so local runs are unchanged.
+
+```bash
+# backend (needs a Modal secret "clinicalrag-groq" with GROQ_API_KEY)
+CLINICALRAG_CORS_ORIGINS=https://<your-site>.netlify.app modal deploy modal_app.py
+```
+
 ## Known limitations
 
 - Handwriting OCR remains genuinely hard. See the real, measured numbers above rather than a claim that it "works."
 - The corpus (37 documents) and eval set (48 questions, written by me rather than a clinician) are small. The numbers show the method works and was measured; they don't say how it behaves on a hospital's archive.
 - Vector store is ChromaDB (local/embedded), which is the right size for this corpus. A larger deployment would move to a server-based store.
 - Agent mode costs 6-12 LLM calls per multi-document question, so on Groq's free tier it is slow (15-60 s) and rate-limited.
-- Uploaded documents are not persistent on the Hugging Face Space (its disk resets on restart); the bundled documents are part of the image.
+- Uploaded documents are not persistent in the live demo: the container's disk resets when it scales to zero. The bundled documents are part of the image.
 - The fine-tuned handwriting model (1.3GB) isn't bundled in this repo or image. See `notebooks/finetune_trocr_rxhandbd.ipynb` to reproduce it.

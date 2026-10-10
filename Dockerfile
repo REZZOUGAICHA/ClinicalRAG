@@ -26,6 +26,13 @@ WORKDIR /app
 # and doesn't pull the GPU variant in via python-doctr[torch]'s dependency.
 RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
+# chroma-hnswlib is compiled from source here, and by default with
+# -march=native: it uses every instruction the BUILD machine's CPU has. On
+# Modal the build and run machines differ, and the container died with exit
+# code 132 (illegal instruction) when it landed on an older CPU. Portable
+# code is slightly slower, which doesn't matter at this index size.
+ENV HNSWLIB_NO_NATIVE=1
+
 # Install the rest of the dependencies in their own layer — this only gets
 # rebuilt when requirements.txt actually changes, not on every code edit.
 COPY requirements.txt .
